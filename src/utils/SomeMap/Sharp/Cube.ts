@@ -10,14 +10,17 @@ class Cube extends Base {
   PROJECTION_CENTER_Y = this.height / 2
   FIELD_OF_VIEW = this.width * 0.8;
 
-  constructor(ctx: CanvasRenderingContext2D, { width, height, x, y, z, radius }: CubeOption) {
+  constructor(ctx: CanvasRenderingContext2D, { width, height, x, y, z, radius, theta, phi }: CubeOption) {
     super(ctx, { width, height })
     this.x = (Math.random() - 0.5) * width;
     this.y = (Math.random() - 0.5) * width;
+    this.y = 100
     this.z = (Math.random() - 0.5) * width;
+    // this.z = 100
     this.radius = radius ? radius : Math.floor(Math.random() * 12 + 10);
-
-    animate(this, 10000, { x, y, z })
+    this.theta = -65 / 360 * Math.PI; // Random value between [0, 2Pi]
+    // this.phi = Math.acos((Math.random() * 2) - 1); // Random value between [0, Pi]
+    // animate(this, 10000, { x, z })
 
   }
   // Do some math to project the 3D position into the 2D canvas
@@ -39,16 +42,28 @@ class Cube extends Base {
       return;
     }
     for (let i = 0; i < CUBE_LINES.length; i++) {
-      const v1 = {
+      let v1 = {
         x: this.x + (this.radius * CUBE_VERTICES[CUBE_LINES[i][0]][0]),
         y: this.y + (this.radius * CUBE_VERTICES[CUBE_LINES[i][0]][1]),
         z: this.z + (this.radius * CUBE_VERTICES[CUBE_LINES[i][0]][2])
       };
-      const v2 = {
+
+      let v2 = {
         x: this.x + (this.radius * CUBE_VERTICES[CUBE_LINES[i][1]][0]),
         y: this.y + (this.radius * CUBE_VERTICES[CUBE_LINES[i][1]][1]),
         z: this.z + (this.radius * CUBE_VERTICES[CUBE_LINES[i][1]][2])
       };
+      const trans = ({ x, y, z }: Vi): Vi => {
+        // const r = Math.sqrt(v1.x ** 2 + v1.y ** 2 + v1.z ** 2)
+        return {
+          x: x,
+          y: y * Math.cos(this.theta) + z * Math.sin(this.theta),
+          z: y * Math.sin(this.theta) + z * Math.cos(this.theta)
+        }
+      }
+      v1 = trans(v1)
+      v2 = trans(v2)
+
       const v1Project = this.project(v1.x, v1.y, v1.z);
       const v2Project = this.project(v2.x, v2.y, v2.z);
       ctx.beginPath();

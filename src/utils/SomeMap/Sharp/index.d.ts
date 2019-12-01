@@ -13,3 +13,9 @@ interface CubeOption extends BaseOption {
   phi?: number
   radius?: number
 }
+
+interface Vi {
+  x: number,
+  y: number,
+  z: number
+}

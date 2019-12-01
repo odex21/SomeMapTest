@@ -1,5 +1,6 @@
 
 import Dot from './Sharp/Dot'
+import Dot2 from './Sharp/Dot2'
 import Cube from './Sharp/Cube'
 
 // // const width = 40, height = 30
@@ -22,20 +23,28 @@ class SomeMap {
     this.dots = []
     // this.context.clearRect(0, 0, width, height);
     const { width, height } = this.canvas
-    this.PERSPECTIVE = width * 0.8
+    this.PERSPECTIVE = 150
     this.PROJECTION_CENTER_X = width / 2
-    this.PROJECTION_CENTER_Y = height / 5 * 4
+    this.PROJECTION_CENTER_Y = height / 2
 
+    this.init(Cube)
+    this.draw()
+  }
+
+  init(sharp: any) {
+    const { width, height } = this.canvas
     const length = this.canvas.width / 10
+
     for (let i = 0; i < length; i++) {
-      this.dots.push(new Cube(this.context, {
+      console.log(sharp)
+      this.dots.push(new sharp(this.context, {
         width, height,
         x: (Math.random() - 0.5) * (width * 0.5),
         y: (Math.random() - 0.5) * (width * 0.5),
-        z: (Math.random() - 0.5) * (width * 0.5)
+        z: (Math.random() - 0.5) * (width * 0.5),
+        radius: 20
       }))
     }
-    this.draw()
   }
 
   draw() {
@@ -51,7 +60,7 @@ class SomeMap {
     }
     // console.log(this.i++)
     // Request the browser the call render once its ready for a new frame
-    requestAnimationFrame(() => this.draw())
+    // requestAnimationFrame(() => this.draw())
   }
 }
 
