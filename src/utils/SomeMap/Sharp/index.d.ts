@@ -1,3 +1,4 @@
+
 interface BaseOption {
   width: number
   height: number
@@ -10,8 +11,11 @@ interface CubeOption extends BaseOption {
   y: number
   z: number
   theta?: number
-  phi?: number
   radius?: number
+}
+
+interface CubeSetOption {
+  theta?: number
 }
 
 interface Vi {
@@ -19,3 +23,4 @@ interface Vi {
   y: number,
   z: number
 }
+
