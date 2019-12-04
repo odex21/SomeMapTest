@@ -1,5 +1,5 @@
 interface some {
-  [propName: string]: any;
+  [propName: string]: any
 }
 
 const animate = (object: some, time: number, to: some, loop = true) => {
@@ -17,12 +17,12 @@ const animate = (object: some, time: number, to: some, loop = true) => {
   return new Promise((resolve, reject) => {
 
     const auto = (timeStamp: number) => {
-      if (!start) start = timeStamp;
-      const progress = timeStamp - start + saveTime;
+      if (!start) start = timeStamp
+      const progress = timeStamp - start + saveTime
 
       if (!run) {
-        resolve(progress);
-        return;
+        resolve(progress)
+        return
       }
 
       Object.entries(de).forEach(([k, { v, face }]) => {
@@ -31,7 +31,7 @@ const animate = (object: some, time: number, to: some, loop = true) => {
       })
 
       if (progress < time) {
-        requestAnimationFrame(auto);
+        requestAnimationFrame(auto)
       } else {
         if (loop) {
           // console.log('sfsd', backup, to)
@@ -42,10 +42,10 @@ const animate = (object: some, time: number, to: some, loop = true) => {
           requestAnimationFrame(auto)
         } else {
           console.log('sfsd', backup, to)
-          resolve();
+          resolve()
         }
       }
-    };
+    }
     requestAnimationFrame(auto)
   })
 }

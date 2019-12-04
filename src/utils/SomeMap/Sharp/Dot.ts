@@ -10,23 +10,23 @@ class Dot {
   phi: number
   radius: number
   globalRadius: number
-  width: number
-  height: number
+  canvasWidth: number
+  canvasHeight: number
   xProjected: number
   yProjected: number
   scaleProjected: number
   ctx: CanvasRenderingContext2D
 
 
-  constructor(ctx: CanvasRenderingContext2D, { width, height }: BaseOption) {
-    this.width = width
-    this.height = height
+  constructor(ctx: CanvasRenderingContext2D, { canvasWidth, canvasHeight }: BaseOption) {
+    this.canvasWidth = canvasWidth
+    this.canvasHeight = canvasHeight
     this.ctx = ctx
-    this.x = (Math.random() - 0.5) * width; // Give a random x position
-    this.y = (Math.random() - 0.5) * height; // Give a random y position
-    this.z = Math.random() * width; // Give a random z position
+    this.x = (Math.random() - 0.5) * canvasWidth; // Give a random x position
+    this.y = (Math.random() - 0.5) * canvasHeight; // Give a random y position
+    this.z = Math.random() * canvasWidth; // Give a random z position
     this.radius = 10; // Size of our element in the 3D world
-    this.globalRadius = this.width / 3
+    this.globalRadius = this.canvasWidth / 3
 
     this.theta = Math.random() * 2 * Math.PI; // Random value between [0, 2Pi]
     this.phi = Math.acos((Math.random() * 1) - 1); // Random value between [0, Pi]
@@ -62,7 +62,7 @@ class Dot {
     // We first calculate the projected values of our dot
     this.project(p, px, py);
     // We define the opacity of our element based on its distance
-    this.ctx.globalAlpha = Math.abs(1 - this.z / this.width);
+    this.ctx.globalAlpha = Math.abs(1 - this.z / this.canvasWidth);
     // We draw a rectangle based on the projected coordinates and scale
     // this.ctx.fillRect(this.xProjected - this.radius, this.yProjected - this.radius, this.radius * 2 * this.scaleProjected, this.radius * 2 * this.scaleProjected);
 

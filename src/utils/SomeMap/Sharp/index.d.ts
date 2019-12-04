@@ -1,8 +1,7 @@
 
 interface BaseOption {
-  width: number
-  height: number
-
+  canvasWidth: number
+  canvasHeight: number
 }
 
 
@@ -11,11 +10,17 @@ interface CubeOption extends BaseOption {
   y: number
   z: number
   theta?: number
-  radius?: number
+  radius: number
+  cubeHeight?: number
+  faceColor?: string
 }
 
 interface CubeSetOption {
   theta?: number
+  PERSPECTIVE?: number
+  PROJECTION_CENTER_X?: number
+  PROJECTION_CENTER_Y?: number
+  faceColor?: FaceColor
 }
 
 interface Vi {
@@ -24,3 +29,22 @@ interface Vi {
   z: number
 }
 
+interface Evt {
+  x: number
+  y: number
+}
+
+interface FaceColor {
+  [index: number]: string
+}
+
+interface BaseTodo {
+  [index: string]: Function[]
+}
+
+
+interface CubeAnimationOption extends CubeSetOption {
+  x?: number
+  y?: number
+  z?: number
+}

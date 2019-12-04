@@ -1,88 +1,96 @@
 <template>
   <div class="hello">
     <h1>{{ msg }}</h1>
-    <div style="z-index: 10">
-      <button @click="minus">-</button>
-      <button @click="add">+</button>
+    <div class="theta-controller" style="z-index: 10">
+      <label for="theta">Theta</label>
+      <input @input="updateTheta" id="theta" v-model="t" type="range" :min="-180" :max="180" />
+      <span>{{t}}</span>
+    </div>
+    <div class="theta-controller" style="z-index: 10">
+      <label for="perspective">PERSPECTIVE</label>
+      <input @input="updatePerspective" id="theta" v-model="p" type="range" :min="0" :max="3000" />
+      <span>{{p}}</span>
     </div>
     <canvas style="z-index: -2" :width="cWidth" :height="cHeight" ref="map"></canvas>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
-import SomeMap from "@/utils/SomeMap";
+import { Component, Prop, Vue } from "vue-property-decorator"
+import SomeMap from "@/utils/SomeMap"
 
 @Component
 export default class HelloWorld extends Vue {
   @Prop() private msg!: string;
-  t: number;
+  t: number = -160;
+  p: number = 2500;
   someMap: any;
   cWidth: number = 1600;
   cHeight: number = 900;
+  inited: boolean = false;
 
   constructor() {
-    super();
-    this.t = -75;
-    console.log(this.t);
+    super()
+    console.log(this.t)
   }
 
-  add() {
-    console.log("???", this.t, this, this.someMap, this.cWidth);
-    this.t++;
-    console.log("theta", this.t, this.theta);
-    this.someMap.theta = this.theta;
+  updateTheta() {
+    this.someMap.setPerspective({ theta: this.theta })
+    this.someMap.draw()
   }
-
-  minus() {
-    console.log("???");
-    this.t--;
-    console.log("theta", this.t, this.theta);
-    this.someMap.theta = this.theta;
-    // this.someMap.theta = this.theta;
+  updatePerspective() {
+    // this.someMap.PERSPECTIVE = +this.p
+    this.someMap.setPerspective({ PERSPECTIVE: +this.p })
+    this.someMap.draw()
   }
-
   get theta() {
-    console.log("theta", this.t);
-    return (this.t / 360) * Math.PI;
+    console.log("theta", this.t)
+    return (this.t / 360) * Math.PI
   }
 
   async mounted(): Promise<void> {
     const resize = () => {
-      const { innerWidth, innerHeight } = window;
-      this.cWidth = innerWidth; //parseInt(innerWidth.replace("px", ""));
-      this.cHeight = innerHeight; //parseInt(innerHeight.);
-    };
-    resize();
-    await this.$nextTick();
-    this.someMap = new SomeMap(this.$refs.map as HTMLCanvasElement);
-    requestAnimationFrame(() => {
-      this.someMap.draw();
-    });
+      console.log("resize")
+      const { innerWidth, innerHeight } = window
+      this.cWidth = innerWidth
+      this.cHeight = innerHeight
 
-    addEventListener("resize", resize);
+      if (this.inited) {
+        this.someMap.set({
+          canvasWidth: innerWidth,
+          canvasHeight: innerHeight
+        })
+        requestAnimationFrame(() => {
+          this.someMap.draw()
+        })
+      } else this.inited = true
+    };
+    resize()
+
+    await this.$nextTick()
+    this.someMap = new SomeMap(
+      this.$refs.map as HTMLCanvasElement,
+      this.theta,
+      this.p
+    )
+
+    // requestAnimationFrame(() => {
+    //   this.someMap.draw()
+    // })
+
+    addEventListener("resize", resize)
   }
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="stylus">
-h3 {
-  margin: 40px 0 0
-}
-
-ul {
-  list-style-type: none
-  padding: 0
-}
-
-li {
-  display: inline-block
-  margin: 0 10px
-}
-
-a {
-  color: #42b983
+.theta-controller {
+  z-index: 10
+  display: flex
+  align-items: center
+  margin: 0 auto
+  width: fit-content
 }
 
 canvas {
