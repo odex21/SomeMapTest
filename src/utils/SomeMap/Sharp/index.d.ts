@@ -9,9 +9,12 @@ interface CubeOption extends BaseOption {
   x: number
   y: number
   z: number
+  pos: Pos
   theta?: number
-  radius: number
+  radius?: number
+  cubeWidth?: number
   cubeHeight?: number
+  cubeLength?: number
   faceColor?: string
 }
 
@@ -42,6 +45,10 @@ interface BaseTodo {
   [index: string]: Function[]
 }
 
+interface Pos {
+  x: number
+  y: number
+}
 
 interface CubeAnimationOption extends CubeSetOption {
   x?: number

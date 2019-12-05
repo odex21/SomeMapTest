@@ -8,7 +8,7 @@
     </div>
     <div class="theta-controller" style="z-index: 10">
       <label for="perspective">PERSPECTIVE</label>
-      <input @input="updatePerspective" id="theta" v-model="p" type="range" :min="0" :max="3000" />
+      <input @input="updatePerspective" id="theta" v-model="p" type="range" :min="0" :max="5000" />
       <span>{{p}}</span>
     </div>
     <canvas style="z-index: -2" :width="cWidth" :height="cHeight" ref="map"></canvas>
@@ -22,7 +22,7 @@ import SomeMap from "@/utils/SomeMap"
 @Component
 export default class HelloWorld extends Vue {
   @Prop() private msg!: string;
-  t: number = -160;
+  t: number = 180;
   p: number = 2500;
   someMap: any;
   cWidth: number = 1600;
@@ -35,7 +35,7 @@ export default class HelloWorld extends Vue {
   }
 
   updateTheta() {
-    this.someMap.setPerspective({ theta: this.theta })
+    this.someMap.setPerspective({ theta: this.theta * 2 })
     this.someMap.draw()
   }
   updatePerspective() {
@@ -55,22 +55,23 @@ export default class HelloWorld extends Vue {
       this.cWidth = innerWidth
       this.cHeight = innerHeight
 
-      if (this.inited) {
-        this.someMap.set({
-          canvasWidth: innerWidth,
-          canvasHeight: innerHeight
-        })
-        requestAnimationFrame(() => {
-          this.someMap.draw()
-        })
-      } else this.inited = true
+      // if (this.inited) {
+      //   this.someMap.set({
+      //     canvasWidth: innerWidth,
+      //     canvasHeight: innerHeight
+      //   })
+      //   requestAnimationFrame(() => {
+      //     this.someMap.draw()
+      //   })
+      // } else this.inited = true
     };
+
     resize()
 
     await this.$nextTick()
     this.someMap = new SomeMap(
       this.$refs.map as HTMLCanvasElement,
-      this.theta,
+      this.theta * 2,
       this.p
     )
 

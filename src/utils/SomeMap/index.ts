@@ -2,7 +2,7 @@
 import Dot from './Sharp/Dot'
 import Dot2 from './Sharp/Dot2'
 import Cube from './Sharp/Cube'
-import { setOption } from './utils/utils'
+import { setOption, changeToGreen } from './utils/utils'
 import testData from './data/mapdata.json'
 const { mapData } = testData
 import { tileInfo } from './data/tailInfo'
@@ -47,29 +47,29 @@ class SomeMap {
     this.baseFloor = new Cube(this.context, this, {
       canvasWidth: width,
       canvasHeight: height,
-      x: 0 * - width / 2,
-      z: 0 * -height / 2,
+      x: 0,
+      z: 0,
       y: -5,
       radius: width / 2,
       cubeHeight: 5,
-      faceColor: '#414141'
+      faceColor: '#414141',
+      cubeLength: height / 2,
+      cubeWidth: width / 2,
+      pos: { x: 0, y: 0 }
     })
     this.init(mapData)
 
-    const baseOpt = { PERSPECTIVE, PROJECTION_CENTER_X: width / 2, PROJECTION_CENTER_Y: width / 2, theta }
+    const baseOpt = { PERSPECTIVE, PROJECTION_CENTER_X: width / 2, PROJECTION_CENTER_Y: height / 2, theta }
     this.setPerspective(baseOpt)
     this.baseFloor.set(baseOpt)
     this.draw()
 
 
-
     this.canvas.addEventListener('click', (evt) => {
-      let hit = false
-      this.dots.reduceRight((pre, e) => {
-        if (hit) return false
-        hit = e.pointInPath(evt)
-        return false
-      }, false)
+      for (let i = this.dots.length - 1; i > -1; i--) {
+        const hit = this.dots[i].pointInPath(evt)
+        if (hit) break
+      }
     })
   }
 
@@ -78,63 +78,84 @@ class SomeMap {
     const { width, height } = mapdata
     console.log(width, height)
     const { width: canvasWidth, height: canvasHeight } = this.canvas
-    const changeToGreen = (cube: Cube) => {
-      cube.faceColor[1] = 'rgba(0, 255, 0, 0.7)'
-      this.draw()
-    }
 
-    const r = this.canvas.width / (width + 4)
+    const r = Math.min(this.canvas.width / (width + 2), this.canvas.height / (height + 2))
+    const xOffset = 0.5
+    const yOffset = 0.5
+
+    const arounds = []
+    const top = []
+    const bottom = []
+
     let i = 0
     for (let h = height; h > -2; h--) {
       for (let w = width; w > -2; w--) {
+        const pos = {
+          x: (w - (width / 2) + xOffset) * r,
+          z: (h - (height / 2) + yOffset) * r,
+          y: 5,
+          canvasWidth,
+          canvasHeight,
+          radius: r / 2,
+          pos: { x: w, y: h }
+        }
 
-        console.log(h, w, i++)
         if (h === height || h === -1 || w === width || w === -1) {
-          // if (h === height) continue
           const cube = new Cube(this.context, this, {
-            canvasWidth,
-            canvasHeight,
-            x: (w - (width / 2) + 1) * r,
-            z: (h - (height / 2) + 2) * r,
-            y: -10,
-            radius: r / 2,
+            ...pos,
             cubeHeight: 10,
-            faceColor: 'rgb(230, 230, 230)'
+            faceColor: 'rgb(230, 230, 230)',
           })
-          this.dots.push(cube)
+          arounds.push(cube)
           continue
         }
+
         const tile = mapData.tiles[h * width + w]
         const target = tileInfo[tile.tileKey]
         const random = tile.heightType ? 40 : 15
+
         const cube = new Cube(this.context, this, {
-          canvasWidth,
-          canvasHeight,
-          x: (w - (width / 2) + 1) * r,
-          z: (h - (height / 2) + 2) * r,
+          ...pos,
           y: -random,
-          radius: r / 2,
           cubeHeight: random,
-          faceColor: target.color
+          faceColor: target.color,
         })
-        this.dots.push(cube)
+
+        if (random > 15) top.push(cube)
+        else bottom.push(cube)
+
         cube.on('click', changeToGreen)
       }
     }
 
-    let ii = 0
-    for (let h = 0; h < height + 2; h++) {
-      const temp = [], temp2 = []
-      for (let w = 0; w < width + 2; w++) {
-        const cube = this.dots[ii++]
+    const arrange = (arr: Cube[], defaultX: number) => {
+      const res: Cube[] = []
+      let temp1: Cube[] = [], temp2: Cube[] = []
 
-        if (w < width / 2 + 1) temp2.push(cube)
-        else temp.push(cube)
-      }
-      this.updateArr.push(...temp2.reverse())
-      this.updateArr.push(...temp)
+      let curY: number
+      arr.forEach((el) => {
+        const { x, y } = el.pos
+        if (!curY) curY = y
+        if (x < defaultX / 2 + 1) temp2.push(el)
+        else temp1.push(el)
+
+        if (y !== curY) {
+          curY = y
+          res.push(...temp2.reverse(), ...temp1)
+          temp1 = []
+          temp2 = []
+        }
+      })
+      res.push(...temp2.reverse(), ...temp1)
+
+      return res
     }
-    console.log(this.updateArr)
+
+    const a = arrange(arounds, width)
+    const b = arrange(bottom, width)
+    const t = arrange(top, width)
+
+    this.dots.push(...a, ...b, ...t)
   }
 
 
@@ -154,7 +175,7 @@ class SomeMap {
     this.baseFloor.draw()
     // Loop through the dots array and draw every dot
 
-    this.updateArr.forEach((e) => e.draw())
+    this.dots.forEach((e) => e.draw())
     // Request the browser the call render once its ready for a new frame
     // requestAnimationFrame(() => this.draw())
   }
