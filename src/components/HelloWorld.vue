@@ -18,7 +18,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator"
 import SomeMap from "@/utils/SomeMap"
-import { mapData } from "./initData"
+import { mapData, routes } from "./initData"
 @Component
 export default class HelloWorld extends Vue {
   @Prop() private msg!: string;
@@ -51,7 +51,7 @@ export default class HelloWorld extends Vue {
       const { innerWidth, innerHeight } = window
       this.cWidth = innerWidth
       this.cHeight = innerHeight
-    };
+    }
 
     resize()
 
@@ -60,7 +60,8 @@ export default class HelloWorld extends Vue {
       this.$refs.map as HTMLCanvasElement,
       this.theta * 2,
       this.p,
-      mapData
+      mapData,
+      routes
     )
 
     // requestAnimationFrame(() => {

@@ -1,15 +1,18 @@
-declare module "*mapdata.json" {
+import { Pos } from './utils/SomeMap/Sharp'
+
+declare module "mapdata.json" {
   const value: {
     mapData: MapData
+    routes: Route[]
   }
   export default value
 }
 
 
-declare module "*.json" {
-  const value: any
-  export default value
-}
+// declare module "*.json" {
+//   const value: any
+//   export default value
+// }
 
 
 
@@ -19,10 +22,11 @@ interface Tiles {
   buildableType: number,
   passableMask: number,
   blackboard: any,
-  effects: Effect,
+  effects: Effect | null,
   events?: {
     [index: string]: Function[]
   }
+  [index: string]: any
 }
 
 
@@ -36,6 +40,30 @@ interface Effect {
   direction: number
 }
 
+interface RoutePos {
+  col: number
+  row: number
+}
+
+interface PathPoint {
+  type: number
+  time: number
+  position: RoutePos
+  reachOffset: Pos
+  randomizeReachOffset: boolean
+  reachDistance: number
+}
+
+interface Route {
+  motionMode: number
+  startPosition: RoutePos
+  endPosition: RoutePos
+  spawnRandomRange: Pos
+  spawnOffset: Pos
+  checkpoints: PathPoint[]
+  allowDiagonalMove: boolean
+}
+
 interface MapData {
   map: number[][]
   tiles: Tiles[]
@@ -43,3 +71,10 @@ interface MapData {
   height: number
 }
 
+// import data from './mapdata.json'
+type R = Route | null
+
+interface Data {
+  mapData: MapData
+  routes: R[]
+}

@@ -1,10 +1,12 @@
 
 import Cube from './Sharp/Cube'
-import { setOption, sleep, TaskQueue, arrangeCube, changeXZ } from './utils/utils'
+import { setOption, sleep, TaskQueue, arrangeCube, changeXZ, addRoutes } from './utils/utils'
 import { tileInfo } from './data/tailInfo'
 import { CubeSetOption, Pos, MapMouseEvent } from './Sharp'
 import PathLine from './Sharp/PathLine'
 import MapCube from './Sharp/MapCube'
+import { Grid } from 'pathfinding'
+import { MapData, Route, R } from '@/json'
 
 
 
@@ -31,11 +33,11 @@ class SomeMap {
   r: number
   xz: (x: Pos) => Pos
   background: ImageData | any
+  grid: Grid
 
-  constructor(container: HTMLCanvasElement, theta: number = -75 / 360 * Math.PI, PERSPECTIVE: number, mapData: MapData) {
+  constructor(container: HTMLCanvasElement, theta: number = -75 / 360 * Math.PI, PERSPECTIVE: number, mapData: MapData, routes: R[]) {
     this.canvas = container
     this.context = this.canvas.getContext('2d') as CanvasRenderingContext2D
-    // this.context.clearRect(0, 0, width, height);
     const { width, height } = this.canvas
     this.canvasWidth = width
     this.canvasHeight = height
@@ -65,7 +67,10 @@ class SomeMap {
     })
 
 
-    this.init(mapData)
+    this.grid = this.init(mapData)
+    console.log(mapData, routes)
+    const route = addRoutes(routes[1] as Route, this)
+    console.log(route)
     const perspecOpt = { perspective: { PERSPECTIVE, PROJECTION_CENTER_X: width / 2, PROJECTION_CENTER_Y: height / 2 }, theta }
     this.setPerspective(perspecOpt)
 
@@ -92,9 +97,17 @@ class SomeMap {
     const bottomHeight = r * 0.1
     const topHeight = r * 0.25
 
+
+    // todo gird
+    const girds: number[][] = []
+
     for (let y = height - 1; y > -1; y--) {
       const top = []
       const bottom = []
+
+      // todo gird
+      const girdArr: number[] = []
+
       for (let x = width - 1; x > -1; x--) {
         const { x: w, y: h } = this.xz({ x, y })
         const baseOpt = {
@@ -109,6 +122,12 @@ class SomeMap {
         }
 
         const tile = mapdata.tiles[y * width + x]
+
+        // todo gird
+        const { tileKey: key, passableMask } = tile
+        const crossAble = !/end|hole/.test(key) && passableMask === 3 ? 0 : 1
+        girdArr.push(crossAble)
+
         const target = tileInfo[tile.tileKey]
         const cubeHeight = (tile.heightType ? topHeight : bottomHeight) / 2
 
@@ -130,8 +149,11 @@ class SomeMap {
           })
       }
 
+      girds.push(girdArr)
       this.dots.push(...arrangeCube(bottom, width), ...arrangeCube(top, width))
     }
+
+    return new Grid(girds)
   }
 
 

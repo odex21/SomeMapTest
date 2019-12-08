@@ -2,12 +2,14 @@ import { Notification } from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 
 // import testData from './data/mapdata.json'
-import testData from '@/utils/SomeMap/data/5-10mapdata.json'
-import Cube from '../utils/SomeMap/Sharp/Cube'
-import { ElNotification, ElNotificationComponent } from 'element-ui/types/notification'
-import { setOption } from '@/utils/SomeMap/utils/utils'
+import { MapData, Data, Route } from '@/json'
+
+
+import { default as testData } from '@/utils/SomeMap/data/mapdata.json'
+import { ElNotificationComponent } from 'element-ui/types/notification'
 import MapCube from '@/utils/SomeMap/Sharp/MapCube'
-const { mapData } = testData
+const { mapData, routes } = testData
+const Data: Data = Object.assign({}, testData) as Data
 
 let noti: Noti, notiTime: number
 const notiStayTime: number = 3000
@@ -19,7 +21,7 @@ interface Noti extends ElNotificationComponent {
   title: string
 }
 
-mapData.tiles.forEach(e => {
+Data.mapData.tiles.forEach((e) => {
   e.events = {
     click: [
       (cube: MapCube) => {
@@ -60,5 +62,6 @@ mapData.tiles.forEach(e => {
 })
 
 export {
-  mapData
+  mapData,
+  routes
 }
