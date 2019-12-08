@@ -1,3 +1,4 @@
+import { BaseTodo, Pos, FaceColor, CubeOption, CubeSetOption, Vi, CubeAnimationOption } from '.'
 import Base from './Base'
 import { animate as _animate } from '../utils/animate'
 import { setOption } from '../utils/utils'
@@ -7,14 +8,13 @@ const checkVi = (e: number, offset: number) => e !== undefined ? e : (Math.rando
 
 
 const CUBE_LINES = [[0, 1], [1, 3], [3, 2], [2, 0], [2, 6], [3, 7], [0, 4], [1, 5], [6, 7], [6, 4], [7, 5], [4, 5]]
-const CUBE_FACE = [[0, 1, 3, 2], [0, 1, 5, 4], [3, 2, 6, 7], [4, 5, 6, 7], [0, 2, 6, 4], [1, 3, 5, 7]]
+const CUBE_FACE = [[0, 1, 3, 2], [0, 1, 5, 4], [3, 2, 6, 7], [4, 5, 7, 6], [0, 2, 6, 4], [1, 3, 7, 5]]
 const CUBE_VERTICES = [[-1, -1, -1], [1, -1, -1], [-1, 1, -1], [1, 1, -1], [-1, -1, 1], [1, -1, 1], [-1, 1, 1], [1, 1, 1]]
 
 class Cube extends Base {
   width: number
   length: number
   height: number
-  father: SomeMap
   PROJECTION_CENTER_X = this.canvasWidth / 2
   PROJECTION_CENTER_Y = this.canvasHeight / 2
   PERSPECTIVE = this.canvasWidth * 0.8;
@@ -25,9 +25,10 @@ class Cube extends Base {
   }
   todo: BaseTodo = {}
   pos: Pos
+  strokeStyle: string = 'rgb(64, 170, 191, 0.5)'
 
-  constructor(ctx: CanvasRenderingContext2D, father: SomeMap, cubeOption: CubeOption) {
-    super(ctx, { canvasWidth: cubeOption.canvasWidth, canvasHeight: cubeOption.canvasHeight })
+  constructor(cubeOption: CubeOption) {
+    super(cubeOption)
 
     const { cubeLength, cubeWidth, cubeHeight, canvasWidth, canvasHeight, x, y, z, radius, theta, faceColor, pos } = cubeOption
     this.radius = radius || Math.floor(Math.random() * 12 + 10)
@@ -36,7 +37,6 @@ class Cube extends Base {
     this.height = cubeHeight || radius || 10
     this.length = cubeLength || this.radius
 
-    this.father = father
     this.x = checkVi(x, canvasWidth)
     this.y = checkVi(y, canvasHeight)
     this.z = checkVi(z, canvasHeight)
@@ -46,9 +46,9 @@ class Cube extends Base {
 
     this.theta = theta || 0
 
-    ctx.strokeStyle = 'rgb(64, 170, 191, 0.5)'
-    ctx.lineJoin = 'round'
-    ctx.lineWidth = 2
+    this.strokeStyle = 'rgb(64, 170, 191, 0.5)'
+    cubeOption.ctx.lineJoin = 'round'
+    cubeOption.ctx.lineWidth = 2
 
   }
 
@@ -60,6 +60,7 @@ class Cube extends Base {
   pointInPath(evt: MouseEvent) {
     const hit = this.faces.some(e => this.ctx.isPointInPath(e, evt.layerX, evt.layerY))
     if (hit) {
+      console.log(this.pos, this.todo[evt.type])
       this.todo[evt.type] && this.todo[evt.type].forEach(e => e.call(this, this, this.father))
       return hit
     } else return false
@@ -124,30 +125,24 @@ class Cube extends Base {
     }
 
 
-    CUBE_LINES.forEach(line => {
+    CUBE_LINES.forEach((line, index) => {
+      if (index === 2 || index === 8) return
+      if (index < 5) return
       const v1Project = this.viToXy(CUBE_VERTICES[line[0]])
       const v2Project = this.viToXy(CUBE_VERTICES[line[1]])
 
+      this.ctx.lineWidth = 2
       ctx.beginPath()
       ctx.moveTo(v1Project.x, v1Project.y)
       ctx.lineTo(v2Project.x, v2Project.y)
-
+      this.ctx.strokeStyle = this.strokeStyle
       ctx.stroke()
     })
-    // for (let i = 0; i < CUBE_LINES.length; i++) {
 
-    //   const v1Project = this.viToXy(CUBE_VERTICES[CUBE_LINES[i][0]])
-    //   const v2Project = this.viToXy(CUBE_VERTICES[CUBE_LINES[i][1]])
-
-    //   ctx.beginPath()
-    //   ctx.moveTo(v1Project.x, v1Project.y)
-    //   ctx.lineTo(v2Project.x, v2Project.y)
-
-    //   ctx.stroke()
-    // }
+    this.drawFace(5)
+    this.drawFace(4)
     this.drawFace(0)
     this.drawFace(1)
-    // ctx.globalAlpha = Math.abs(this.z / (this.width * 0.5));
   }
 
 

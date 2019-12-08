@@ -3,12 +3,12 @@
     <h1>{{ msg }}</h1>
     <div class="theta-controller" style="z-index: 10">
       <label for="theta">Theta</label>
-      <input @input="updateTheta" id="theta" v-model="t" type="range" :min="-180" :max="180" />
+      <input @input="updateTheta" id="theta" v-model="t" type="range" :min="0" :max="180" />
       <span>{{t}}</span>
     </div>
     <div class="theta-controller" style="z-index: 10">
       <label for="perspective">PERSPECTIVE</label>
-      <input @input="updatePerspective" id="theta" v-model="p" type="range" :min="0" :max="5000" />
+      <input @input="updatePerspective" id="theta" v-model="p" type="range" :min="1000" :max="9000" />
       <span>{{p}}</span>
     </div>
     <canvas style="z-index: -2" :width="cWidth" :height="cHeight" ref="map"></canvas>
@@ -22,8 +22,8 @@ import SomeMap from "@/utils/SomeMap"
 @Component
 export default class HelloWorld extends Vue {
   @Prop() private msg!: string;
-  t: number = 180;
-  p: number = 2500;
+  t: number = 160;
+  p: number = 3000;
   someMap: any;
   cWidth: number = 1600;
   cHeight: number = 900;

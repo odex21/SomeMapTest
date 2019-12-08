@@ -1,4 +1,5 @@
 import { animate } from '../utils/animate'
+import { BaseOption } from '.'
 
 const element = ['🦖', '🦕', '🐙', "🦑", '🦐', '🦀', '🐡', '🐠', '🐟', '🐬', '🐳', '🐋', '🦈']
 

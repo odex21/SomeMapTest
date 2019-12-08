@@ -1,5 +1,8 @@
+import SomeMap from ".."
 
 interface BaseOption {
+  ctx: CanvasRenderingContext2D
+  father: SomeMap
   canvasWidth: number
   canvasHeight: number
 }
@@ -25,6 +28,15 @@ interface CubeSetOption {
   PROJECTION_CENTER_Y?: number
   faceColor?: FaceColor
 }
+
+interface LineOption extends BaseOption {
+  points: LinePoint[]
+  r: number
+  width?: number
+  y?: number
+}
+
+type LinePoint = Pos
 
 interface Vi {
   x: number,

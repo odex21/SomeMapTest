@@ -82,7 +82,7 @@ const tileInfo: TilesInfo = {
   tile_forbidden: {
     name: '禁入区',
     description: '不可放置单位，不可通行',
-    color: 'rgba(230,230,230, 0.5)',
+    color: 'rgba(230,230,230, 0.9)',
 
   },
   tile_gazebo: {
