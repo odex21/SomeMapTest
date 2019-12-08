@@ -10,6 +10,7 @@ import MapCube from '@/utils/SomeMap/Sharp/MapCube'
 const { mapData } = testData
 
 let noti: Noti, notiTime: number
+const notiStayTime: number = 3000
 const hitCubes: MapCube[] = []
 
 interface Noti extends ElNotificationComponent {
@@ -47,10 +48,10 @@ mapData.tiles.forEach(e => {
           noti.title = cube.tileInfo.name
         }
         setTimeout(() => {
-          if (+ new Date - notiTime > 1000) {
+          if (+ new Date - notiTime > notiStayTime) {
             noti.close()
           }
-        }, 1000)
+        }, notiStayTime)
 
       }
     ]
