@@ -18,28 +18,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator"
 import SomeMap from "@/utils/SomeMap"
-import { Notification } from 'element-ui'
-import 'element-ui/lib/theme-chalk/index.css'
-
-// import testData from './data/mapdata.json'
-import testData from '@/utils/SomeMap/data/5-10mapdata.json'
-import Cube from '../utils/SomeMap/Sharp/Cube'
-const { mapData } = testData
-
-mapData.tiles.forEach(e => {
-  e.events = {
-    click: [
-      (cube: Cube) => {
-        Notification({
-          title: cube.tileInfo.name,
-          message: `${cube.tileInfo.description}`
-        })
-      }
-    ]
-  }
-
-})
-
+import { mapData } from "./initData"
 @Component
 export default class HelloWorld extends Vue {
   @Prop() private msg!: string;
@@ -57,11 +36,9 @@ export default class HelloWorld extends Vue {
 
   updateTheta() {
     this.someMap.setPerspective({ theta: this.theta * 2 })
-    this.someMap.draw()
   }
   updatePerspective() {
     this.someMap.setPerspective({ perspective: { PERSPECTIVE: +this.p } })
-    this.someMap.draw()
   }
   get theta() {
     console.log("theta", this.t)
@@ -74,7 +51,7 @@ export default class HelloWorld extends Vue {
       const { innerWidth, innerHeight } = window
       this.cWidth = innerWidth
       this.cHeight = innerHeight
-    }
+    };
 
     resize()
 

@@ -56,6 +56,9 @@ class Base {
     }
   }
 
+  update() {
+    this.father && this.father.draw(true)
+  }
 }
 
 export default Base

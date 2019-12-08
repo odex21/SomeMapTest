@@ -5,17 +5,20 @@ import { setOption, gradient } from '../utils/utils'
 
 class Line extends Base {
   points: Pos[]
+  absPath: Pos[] = []
   width: number
+  strokeStyle: string | CanvasGradient = 'red'
+  path: Path2D = new Path2D()
 
   constructor(opt: LineOption) {
     super(opt)
-    // const { x, y, z } = opt
     this.points = opt.points
-    this.draw()
     this.x = 0
     this.y = opt.y || 20
     this.z = 0
     this.width = opt.width || 5
+
+    this.draw()
   }
 
 
@@ -23,21 +26,23 @@ class Line extends Base {
     setOption(opt, this)
   }
 
-  draw() {
-    this.ctx.lineWidth = this.width
-    const arr = this.points
-    this.ctx.save()
+  init() {
+    this.absPath = this.points.map(e => this.viToXy(e))
     const path = new Path2D()
-
-    const xyArr = arr.map(e => this.viToXy(e))
-    this.ctx.strokeStyle = gradient(this.ctx, { p1: xyArr[0], p2: xyArr[arr.length - 1] })
-
-    xyArr.forEach(({ x, y }, i) => {
+    this.absPath.forEach(({ x, y }, i) => {
       if (i === 0) path.moveTo(x, y)
       else path.lineTo(x, y)
     })
+    return path
+  }
 
-    this.ctx.stroke(path)
+  draw() {
+    this.ctx.lineWidth = this.width
+    this.ctx.save()
+
+    this.ctx.strokeStyle = this.strokeStyle
+    this.ctx.stroke(this.init())
+
     this.ctx.restore()
   }
 

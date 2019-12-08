@@ -1,4 +1,4 @@
-import { BaseTodo, Pos, FaceColor, CubeOption, CubeSetOption, Vi, CubeAnimationOption, CubeBackState } from '.'
+import { BaseTodo, Pos, FaceColor, CubeOption, CubeSetOption, Vi, CubeAnimationOption, CubeBackState, MapMouseEvent } from '.'
 import Base from './Base'
 import { animate as _animate } from '../utils/animate'
 import { setOption, changeFaceColor } from '../utils/utils'
@@ -27,13 +27,11 @@ class Cube extends Base {
     attr: {},
     state: {}
   }
-  tileInfo: TileInfo
 
   constructor(cubeOption: CubeOption) {
     super(cubeOption)
 
-    const { cubeLength, cubeWidth, cubeHeight, canvasWidth, canvasHeight, x, y, z, radius, theta, faceColor, pos, tileInfo } = cubeOption
-    this.tileInfo = tileInfo
+    const { cubeLength, cubeWidth, cubeHeight, canvasWidth, canvasHeight, x, y, z, radius, theta, faceColor, pos } = cubeOption
     this.radius = radius || Math.floor(Math.random() * 12 + 10)
     this.pos = pos
     this.width = cubeWidth || this.radius
@@ -54,15 +52,19 @@ class Cube extends Base {
 
   }
 
+  restore() {
+    setOption({ ...this.backUpAttr.attr }, this)
+    setOption({ changed: false }, this.backUpAttr.state)
+  }
+
 
   set(opt: CubeSetOption) {
     setOption(opt, this)
   }
 
-  pointInPath(evt: MouseEvent) {
+  pointInPath(evt: MapMouseEvent) {
     const hit = this.faces.some(e => this.ctx.isPointInPath(e, evt.layerX, evt.layerY))
     if (hit) {
-      console.log(this.pos, this.todo[evt.type])
       this.todo[evt.type] && this.todo[evt.type].forEach(e => e.call(this, this, this.father))
       return hit
     } else return false
@@ -117,7 +119,7 @@ class Cube extends Base {
 
 
     CUBE_LINES.forEach((line, index) => {
-      // if (index === 2 || index === 8) return
+      if (index === 2 || index === 8) return
       // if (index < 5) return
       const v1Project = this.viToXy(CUBE_VERTICES[line[0]])
       const v2Project = this.viToXy(CUBE_VERTICES[line[1]])

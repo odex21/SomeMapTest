@@ -1,4 +1,5 @@
 import SomeMap from ".."
+import { GradientColor } from "../utils"
 interface BaseOption {
   ctx: CanvasRenderingContext2D
   father: SomeMap
@@ -18,6 +19,9 @@ interface CubeOption extends BaseOption {
   cubeHeight?: number
   cubeLength?: number
   faceColor?: string
+}
+
+interface MapCubeOption extends CubeOption {
   tileInfo: TileInfo
 }
 
@@ -40,6 +44,10 @@ interface LineOption extends BaseOption {
   r: number
   width?: number
   y?: number
+}
+
+interface PathLineOption extends LineOption {
+  gradientColors: GradientColor[]
 }
 
 type LinePoint = Pos
@@ -78,4 +86,9 @@ interface CubeAnimationOption extends CubeSetOption {
   x?: number
   y?: number
   z?: number
+}
+
+interface MapMouseEvent extends MouseEvent {
+  readonly layerX: number
+  readonly layerY: number
 }

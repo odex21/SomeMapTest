@@ -2,8 +2,9 @@
 import Cube from './Sharp/Cube'
 import { setOption, sleep, TaskQueue, arrangeCube, changeXZ } from './utils/utils'
 import { tileInfo } from './data/tailInfo'
-import { CubeSetOption, Pos } from './Sharp'
-import Line from './Sharp/Line'
+import { CubeSetOption, Pos, MapMouseEvent } from './Sharp'
+import PathLine from './Sharp/PathLine'
+import MapCube from './Sharp/MapCube'
 
 
 
@@ -26,9 +27,10 @@ class SomeMap {
   updateArr: Cube[] = []
   drawing: boolean = false
   baseOpt: any
-  routes: Line[] = []
+  routes: PathLine[] = []
   r: number
   xz: (x: Pos) => Pos
+  background: ImageData | any
 
   constructor(container: HTMLCanvasElement, theta: number = -75 / 360 * Math.PI, PERSPECTIVE: number, mapData: MapData) {
     this.canvas = container
@@ -62,16 +64,14 @@ class SomeMap {
       pos: { x: 0, y: 0 }
     })
 
-    this.init(mapData)
 
+    this.init(mapData)
     const perspecOpt = { perspective: { PERSPECTIVE, PROJECTION_CENTER_X: width / 2, PROJECTION_CENTER_Y: height / 2 }, theta }
     this.setPerspective(perspecOpt)
-    // this.baseFloor.set(perspecOpt)
-    this.draw()
 
     this.canvas.addEventListener('click', (evt) => {
       for (let i = this.dots.length - 1; i > -1; i--) {
-        const hit = this.dots[i].pointInPath(evt)
+        const hit = this.dots[i].pointInPath(evt as MapMouseEvent)
         if (hit) break
       }
     })
@@ -81,7 +81,7 @@ class SomeMap {
 
   init(mapdata: MapData) {
     // test Path
-    // this.addPath([{ x: 0, y: 0 }, { x: 11, y: 7 }])
+    this.addPath([{ x: 0, y: 0 }, { x: 11, y: 7 }])
 
     const r = this.r
     const { width, height } = mapdata
@@ -112,7 +112,7 @@ class SomeMap {
         const target = tileInfo[tile.tileKey]
         const cubeHeight = (tile.heightType ? topHeight : bottomHeight) / 2
 
-        const cube = new Cube({
+        const cube = new MapCube({
           ...baseOpt,
           cubeHeight,
           y: tile.heightType ? -cubeHeight - bottomHeight : -cubeHeight,
@@ -137,7 +137,7 @@ class SomeMap {
 
   addPath(arr: Pos[]) {
     const pArr = arr.map(e => this.xz(e))
-    const line = new Line({
+    const line = new PathLine({
       ...this.baseOpt,
       width: 10,
       y: -50,
@@ -148,15 +148,18 @@ class SomeMap {
   }
 
   setPerspective(opt: CubeSetOption) {
+
     // todo update canvas width & height
     setOption(opt, this)
     this.dots.forEach(e => e.set(opt))
     this.routes.forEach(e => e.set(opt))
     this.baseFloor.set(opt)
     console.log(opt)
+
+    this.draw(true)
   }
 
-  async draw() {
+  async draw(isMapUpdate: boolean) {
     if (this.drawing) {
       this.drawing = false
       await sleep(100)
@@ -167,19 +170,26 @@ class SomeMap {
 
     // Loop through the dots array and draw every dot
 
-    Queue.pushTask(() => new Promise((resolve) => {
-      this.baseFloor.draw()
-      resolve()
-    }))
-    this.dots.forEach((e) => {
-      Queue.pushTask(async () => {
-        if (!this.drawing) {
-          Queue.clear()
-        }
-        e.draw()
-        // await sleep(80)
+    if (isMapUpdate) {
+      Queue.pushTask(() => {
+        this.baseFloor.draw()
+        return Promise.resolve()
       })
-    })
+
+      this.dots.forEach((e) => {
+        Queue.pushTask(async () => {
+          if (!this.drawing) Queue.clear()
+          e.draw()
+          // await sleep(80)
+        })
+      })
+      Queue.pushTask(() => {
+        this.background = this.context.getImageData(0, 0, this.canvas.width, this.canvas.height)
+        return Promise.resolve()
+      })
+    } else {
+      this.context.putImageData(this.background, 0, 0)
+    }
 
     this.routes.forEach(e => {
       Queue.pushTask(async () => {

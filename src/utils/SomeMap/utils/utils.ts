@@ -11,15 +11,14 @@ const setOption = (option: Options, target: any) => {
 }
 
 const changeFaceColor = (color: string = 'rgba(0, 255, 0, 1)') => (cube: Cube, context: SomeMap) => {
-  if (!cube.backUpAttr.state.clicked) {
+  if (!cube.backUpAttr.state.changed) {
     setOption({ faceColor: cube.faceColor }, cube.backUpAttr.attr)
-    setOption({ clicked: true }, cube.backUpAttr.state)
+    setOption({ changed: true }, cube.backUpAttr.state)
     cube.faceColor[1] = color
   } else {
-    setOption({ ...cube.backUpAttr.attr }, cube)
-    setOption({ clicked: false }, cube.backUpAttr.state)
+    cube.restore()
   }
-  context.draw()
+  cube.update()
 }
 
 const sleep = (time: number) => new Promise((resolve, reject) => {
@@ -32,7 +31,8 @@ const changeXZ = (width: number, height: number, r: number, xOffset: number, yOf
   y: (y - (height / 2) + yOffset) * r,
 })
 
-const gradient = (ctx: CanvasRenderingContext2D, { p1, p2, colors = [{ color: 'green', p: 0 }, { color: 'blue', p: 1 }] }: GradientParm) => {
+const gradient = (ctx: CanvasRenderingContext2D, { vector, colors }: GradientParm) => {
+  const { p1, p2 } = vector
   const gradient = ctx.createLinearGradient(p1.x, p1.y, p2.x, p2.y)
   colors
   colors.forEach(({ color, p }) => {
@@ -76,7 +76,6 @@ class TaskQueue {
       this.running++
     }
     if (this.running === 0 && this.queue.length === 0) {
-      console.log('Task is over')
       this.finalTask()
     }
   }
