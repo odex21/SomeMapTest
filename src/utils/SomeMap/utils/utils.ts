@@ -5,14 +5,20 @@ import { Options, P, GradientParm } from '.'
 
 const setOption = (option: Options, target: any) => {
   Object.keys(option).forEach(e => {
-    if (option[e])
-      target[e] = option[e]
+    if (option[e] !== undefined)
+      target[e] = typeof option[e] === 'object' ? Object.assign(target[e] || {}, option[e]) : option[e]
   })
 }
 
-const changeToGreen = (cube: Cube, context: SomeMap) => {
-  cube.faceColor[1] = 'rgba(0, 255, 0, 0.7)'
-  console.log(cube)
+const changeFaceColor = (color: string = 'rgba(0, 255, 0, 1)') => (cube: Cube, context: SomeMap) => {
+  if (!cube.backUpAttr.state.clicked) {
+    setOption({ faceColor: cube.faceColor }, cube.backUpAttr.attr)
+    setOption({ clicked: true }, cube.backUpAttr.state)
+    cube.faceColor[1] = color
+  } else {
+    setOption({ ...cube.backUpAttr.attr }, cube)
+    setOption({ clicked: false }, cube.backUpAttr.state)
+  }
   context.draw()
 }
 
@@ -103,7 +109,7 @@ const arrangeCube = (arr: Cube[], defaultX: number) => {
 
 export {
   setOption,
-  changeToGreen,
+  changeFaceColor,
   sleep,
   TaskQueue,
   arrangeCube,

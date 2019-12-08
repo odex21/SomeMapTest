@@ -1,5 +1,4 @@
 import SomeMap from ".."
-
 interface BaseOption {
   ctx: CanvasRenderingContext2D
   father: SomeMap
@@ -19,14 +18,21 @@ interface CubeOption extends BaseOption {
   cubeHeight?: number
   cubeLength?: number
   faceColor?: string
+  tileInfo: TileInfo
 }
 
 interface CubeSetOption {
   theta?: number
-  PERSPECTIVE?: number
-  PROJECTION_CENTER_X?: number
-  PROJECTION_CENTER_Y?: number
+  perspective?: Perspective
   faceColor?: FaceColor
+  clicked?: boolean
+}
+
+interface CubeBackState {
+  attr: CubeSetOption
+  state: {
+    [index: string]: any
+  }
 }
 
 interface LineOption extends BaseOption {
@@ -42,6 +48,12 @@ interface Vi {
   x: number,
   y: number,
   z: number
+}
+
+interface Perspective {
+  PERSPECTIVE: number
+  PROJECTION_CENTER_X: number
+  PROJECTION_CENTER_Y: number
 }
 
 interface Evt {

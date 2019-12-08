@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "core-js": "^3.3.2",
+    "element-ui": "^2.13.0",
     "vue": "^2.6.10",
     "vue-class-component": "^7.0.2",
     "vue-property-decorator": "^8.3.0",
@@ -29,6 +30,8 @@
     "@vue/test-utils": "1.0.0-beta.29",
     "eslint": "^5.16.0",
     "eslint-plugin-vue": "^5.0.0",
+    "rollup-plugin-terser": "^5.1.2",
+    "rollup-plugin-typescript2": "^0.25.3",
     "stylus": "^0.54.7",
     "stylus-loader": "^3.0.2",
     "typescript": "^3.8.0-dev.20191128",

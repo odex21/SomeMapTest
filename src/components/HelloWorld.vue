@@ -18,6 +18,27 @@
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator"
 import SomeMap from "@/utils/SomeMap"
+import { Notification } from 'element-ui'
+import 'element-ui/lib/theme-chalk/index.css'
+
+// import testData from './data/mapdata.json'
+import testData from '@/utils/SomeMap/data/5-10mapdata.json'
+import Cube from '../utils/SomeMap/Sharp/Cube'
+const { mapData } = testData
+
+mapData.tiles.forEach(e => {
+  e.events = {
+    click: [
+      (cube: Cube) => {
+        Notification({
+          title: cube.tileInfo.name,
+          message: `${cube.tileInfo.description}`
+        })
+      }
+    ]
+  }
+
+})
 
 @Component
 export default class HelloWorld extends Vue {
@@ -39,8 +60,7 @@ export default class HelloWorld extends Vue {
     this.someMap.draw()
   }
   updatePerspective() {
-    // this.someMap.PERSPECTIVE = +this.p
-    this.someMap.setPerspective({ PERSPECTIVE: +this.p })
+    this.someMap.setPerspective({ perspective: { PERSPECTIVE: +this.p } })
     this.someMap.draw()
   }
   get theta() {
@@ -54,17 +74,7 @@ export default class HelloWorld extends Vue {
       const { innerWidth, innerHeight } = window
       this.cWidth = innerWidth
       this.cHeight = innerHeight
-
-      // if (this.inited) {
-      //   this.someMap.set({
-      //     canvasWidth: innerWidth,
-      //     canvasHeight: innerHeight
-      //   })
-      //   requestAnimationFrame(() => {
-      //     this.someMap.draw()
-      //   })
-      // } else this.inited = true
-    };
+    }
 
     resize()
 
@@ -72,7 +82,8 @@ export default class HelloWorld extends Vue {
     this.someMap = new SomeMap(
       this.$refs.map as HTMLCanvasElement,
       this.theta * 2,
-      this.p
+      this.p,
+      mapData
     )
 
     // requestAnimationFrame(() => {

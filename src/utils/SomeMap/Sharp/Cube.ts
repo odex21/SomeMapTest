@@ -1,8 +1,7 @@
-import { BaseTodo, Pos, FaceColor, CubeOption, CubeSetOption, Vi, CubeAnimationOption } from '.'
+import { BaseTodo, Pos, FaceColor, CubeOption, CubeSetOption, Vi, CubeAnimationOption, CubeBackState } from '.'
 import Base from './Base'
 import { animate as _animate } from '../utils/animate'
-import { setOption } from '../utils/utils'
-import SomeMap from '..'
+import { setOption, changeFaceColor } from '../utils/utils'
 
 const checkVi = (e: number, offset: number) => e !== undefined ? e : (Math.random() - 0.5) * offset
 
@@ -15,22 +14,26 @@ class Cube extends Base {
   width: number
   length: number
   height: number
-  PROJECTION_CENTER_X = this.canvasWidth / 2
-  PROJECTION_CENTER_Y = this.canvasHeight / 2
-  PERSPECTIVE = this.canvasWidth * 0.8;
   faces: Path2D[] = []
   faceColor: FaceColor = {
     0: 'rgba(96, 96, 96, 0.75)',
-    1: 'rgba(200, 32, 32, 0.9)'
+    1: 'rgba(200, 32, 32, 0.9)',
+    2: 'rgba(41, 41, 41, 0.9)'
   }
   todo: BaseTodo = {}
   pos: Pos
   strokeStyle: string = 'rgb(64, 170, 191, 0.5)'
+  backUpAttr: CubeBackState = {
+    attr: {},
+    state: {}
+  }
+  tileInfo: TileInfo
 
   constructor(cubeOption: CubeOption) {
     super(cubeOption)
 
-    const { cubeLength, cubeWidth, cubeHeight, canvasWidth, canvasHeight, x, y, z, radius, theta, faceColor, pos } = cubeOption
+    const { cubeLength, cubeWidth, cubeHeight, canvasWidth, canvasHeight, x, y, z, radius, theta, faceColor, pos, tileInfo } = cubeOption
+    this.tileInfo = tileInfo
     this.radius = radius || Math.floor(Math.random() * 12 + 10)
     this.pos = pos
     this.width = cubeWidth || this.radius
@@ -42,13 +45,12 @@ class Cube extends Base {
     this.z = checkVi(z, canvasHeight)
 
     if (faceColor) this.faceColor[1] = faceColor
-    this.faceColor[2] = 'rgb(41, 41, 41, 0.9)'
 
     this.theta = theta || 0
 
-    this.strokeStyle = 'rgb(64, 170, 191, 0.5)'
-    cubeOption.ctx.lineJoin = 'round'
-    cubeOption.ctx.lineWidth = 2
+    this.ctx.lineJoin = 'round'
+    this.ctx.lineWidth = 2
+    this.on('click', changeFaceColor())
 
   }
 
@@ -76,17 +78,6 @@ class Cube extends Base {
   }
 
   // Do some math to project the 3D position into the 2D canvas
-  project({ x, y, z }: Vi) {
-    const sizeProjection = this.PERSPECTIVE / (this.PERSPECTIVE + y)
-    const xProject = (x * sizeProjection) + this.PROJECTION_CENTER_X
-    const yProject = (z * sizeProjection) + this.PROJECTION_CENTER_Y
-    return {
-      size: sizeProjection,
-      x: xProject,
-      y: yProject
-    }
-  }
-  // Draw the dot on the canvas
   viToXy([x, y, z]: number[]) {
     const trans = ({ x, y, z }: Vi): Vi => ({
       x: x,
@@ -99,7 +90,7 @@ class Cube extends Base {
       z: this.z + this.length * z,
       y: this.y + this.height * y,
     }
-    return this.project(trans(temp))
+    return this.project(trans(temp), this.perspective)
   }
 
   drawFace(index: number = 1) {
@@ -113,21 +104,21 @@ class Cube extends Base {
     path.closePath()
     ctx.fillStyle = this.faceColor[index] || this.faceColor[0]
     ctx.fill(path)
-    if (index > -1) this.faces[index] = path
+    if (index > -1 && index < 2) this.faces[index] = path
   }
 
   draw() {
 
     const ctx = this.ctx
     // Do not render a cube that is in front of the camera
-    if (this.z < -this.PERSPECTIVE + this.radius) {
+    if (this.z < -this.perspective.PERSPECTIVE + this.radius) {
       return
     }
 
 
     CUBE_LINES.forEach((line, index) => {
-      if (index === 2 || index === 8) return
-      if (index < 5) return
+      // if (index === 2 || index === 8) return
+      // if (index < 5) return
       const v1Project = this.viToXy(CUBE_VERTICES[line[0]])
       const v2Project = this.viToXy(CUBE_VERTICES[line[1]])
 
@@ -144,8 +135,6 @@ class Cube extends Base {
     this.drawFace(0)
     this.drawFace(1)
   }
-
-
 }
 
 export default Cube

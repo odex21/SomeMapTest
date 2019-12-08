@@ -1,19 +1,9 @@
 
-import Dot from './Sharp/Dot'
-import Dot2 from './Sharp/Dot2'
 import Cube from './Sharp/Cube'
-import { setOption, changeToGreen, sleep, TaskQueue, arrangeCube, changeXZ } from './utils/utils'
-// import testData from './data/mapdata.json'
-import testData from './data/5-10mapdata.json'
-const { mapData } = testData
+import { setOption, sleep, TaskQueue, arrangeCube, changeXZ } from './utils/utils'
 import { tileInfo } from './data/tailInfo'
 import { CubeSetOption, Pos } from './Sharp'
 import Line from './Sharp/Line'
-
-// // const width = 40, height = 30
-// let PERSPECTIVE = width * 0.8; // The field of view of our 3D scene
-// let PROJECTION_CENTER_X = width / 2; // x center of the canvas
-// let PROJECTION_CENTER_Y = height / 2; // y center of the canvas
 
 
 
@@ -40,7 +30,7 @@ class SomeMap {
   r: number
   xz: (x: Pos) => Pos
 
-  constructor(container: HTMLCanvasElement, theta: number = -75 / 360 * Math.PI, PERSPECTIVE: number) {
+  constructor(container: HTMLCanvasElement, theta: number = -75 / 360 * Math.PI, PERSPECTIVE: number, mapData: MapData) {
     this.canvas = container
     this.context = this.canvas.getContext('2d') as CanvasRenderingContext2D
     // this.context.clearRect(0, 0, width, height);
@@ -64,7 +54,7 @@ class SomeMap {
       ...this.baseOpt,
       x: 0,
       z: 0,
-      y: baseHeight / 2,
+      y: baseHeight,
       cubeHeight: baseHeight,
       faceColor: '#414141',
       cubeLength: height / 2,
@@ -74,9 +64,9 @@ class SomeMap {
 
     this.init(mapData)
 
-    const perspecOpt = { PERSPECTIVE, PROJECTION_CENTER_X: width / 2, PROJECTION_CENTER_Y: height / 2, theta }
+    const perspecOpt = { perspective: { PERSPECTIVE, PROJECTION_CENTER_X: width / 2, PROJECTION_CENTER_Y: height / 2 }, theta }
     this.setPerspective(perspecOpt)
-    this.baseFloor.set(perspecOpt)
+    // this.baseFloor.set(perspecOpt)
     this.draw()
 
     this.canvas.addEventListener('click', (evt) => {
@@ -91,7 +81,7 @@ class SomeMap {
 
   init(mapdata: MapData) {
     // test Path
-    this.addPath([{ x: 0, y: 0 }, { x: 11, y: 7 }])
+    // this.addPath([{ x: 0, y: 0 }, { x: 11, y: 7 }])
 
     const r = this.r
     const { width, height } = mapdata
@@ -118,40 +108,30 @@ class SomeMap {
           father: this,
         }
 
-        // if (h === height || h === -1 || w === width || w === -1) {
-        //   const cube = new Cube({
-        //     ...baseOpt,
-        //     y: -(bottomHeight) / 2,
-        //     cubeHeight: bottomHeight,
-        //     faceColor: 'rgb(230, 230, 230)',
-        //   })
-        //   // bottom.push(cube)
-        //   continue
-        // }
-
-        const tile = mapData.tiles[y * width + x]
+        const tile = mapdata.tiles[y * width + x]
         const target = tileInfo[tile.tileKey]
-        const random = tile.heightType ? topHeight : bottomHeight
+        const cubeHeight = (tile.heightType ? topHeight : bottomHeight) / 2
 
         const cube = new Cube({
           ...baseOpt,
-          y: -(tile.heightType ? random + bottomHeight : random),
-          cubeHeight: random,
+          cubeHeight,
+          y: tile.heightType ? -cubeHeight - bottomHeight : -cubeHeight,
           faceColor: target.color,
+          tileInfo: target
         })
 
         if (tile.heightType) top.push(cube)
         else bottom.push(cube)
-
-        cube.on('click', changeToGreen)
+        if (tile.events)
+          Object.entries(tile.events).forEach(([k, arr]) => {
+            arr.forEach(e => {
+              cube.on(k as keyof GlobalEventHandlersEventMap, e)
+            })
+          })
       }
 
       this.dots.push(...arrangeCube(bottom, width), ...arrangeCube(top, width))
     }
-
-
-
-
   }
 
 
@@ -169,13 +149,11 @@ class SomeMap {
 
   setPerspective(opt: CubeSetOption) {
     // todo update canvas width & height
-    const { PERSPECTIVE, PROJECTION_CENTER_X, PROJECTION_CENTER_Y, theta } = opt
-    const temp = { PERSPECTIVE, PROJECTION_CENTER_X, PROJECTION_CENTER_Y, theta }
-    setOption(temp, this)
-    this.dots.forEach(e => e.set(temp))
-    this.routes.forEach(e => e.set(temp))
-    this.baseFloor.set(temp)
-    console.log(temp)
+    setOption(opt, this)
+    this.dots.forEach(e => e.set(opt))
+    this.routes.forEach(e => e.set(opt))
+    this.baseFloor.set(opt)
+    console.log(opt)
   }
 
   async draw() {
@@ -212,9 +190,6 @@ class SomeMap {
         // await sleep(80)
       })
     })
-    // Queue.next()
-    // Request the browser the call render once its ready for a new frame
-    // requestAnimationFrame(() => this.draw())
   }
 }
 

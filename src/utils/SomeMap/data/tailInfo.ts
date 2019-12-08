@@ -1,13 +1,3 @@
-interface tileInfo {
-  name: string
-  description: string
-  color: string
-}
-
-interface TilesInfo {
-  [index: string]: tileInfo
-}
-
 const tileInfo: TilesInfo = {
   tile_bigforce: {
     name: '特种战术点',

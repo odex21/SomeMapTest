@@ -1,5 +1,5 @@
 import Base from "./Base"
-import { LineOption, LinePoint, Vi, Pos, CubeSetOption } from '.'
+import { LineOption, LinePoint, Vi, Pos, CubeSetOption, Perspective } from '.'
 import { setOption, gradient } from '../utils/utils'
 
 
@@ -18,38 +18,15 @@ class Line extends Base {
     this.width = opt.width || 5
   }
 
-  draw() {
-    this.ctx.lineWidth = this.width
-    const path = this.init(this.points)
-    this.ctx.stroke(path)
-  }
 
   set(opt: CubeSetOption) {
     setOption(opt, this)
   }
 
-
-  project({ x, y, z }: Vi) {
-    const sizeProjection = this.PERSPECTIVE / (this.PERSPECTIVE + y)
-    const xProject = (x * sizeProjection) + this.PROJECTION_CENTER_X
-    const yProject = (z * sizeProjection) + this.PROJECTION_CENTER_Y
-    return {
-      size: sizeProjection,
-      x: xProject,
-      y: yProject
-    }
-  }
-  viToXy({ x, y }: Pos) {
-    const z = this.y
-    const trans = ({ x, y, z }: Vi): Vi => ({
-      x: x,
-      z: y * Math.cos(this.theta) + z * Math.sin(this.theta),
-      y: y * Math.sin(this.theta) + z * Math.cos(this.theta)
-    })
-    return this.project(trans({ x, z, y, }))
-  }
-
-  init(arr: LinePoint[]) {
+  draw() {
+    this.ctx.lineWidth = this.width
+    const arr = this.points
+    this.ctx.save()
     const path = new Path2D()
 
     const xyArr = arr.map(e => this.viToXy(e))
@@ -60,7 +37,18 @@ class Line extends Base {
       else path.lineTo(x, y)
     })
 
-    return path
+    this.ctx.stroke(path)
+    this.ctx.restore()
+  }
+
+  viToXy({ x, y }: Pos) {
+    const z = this.y
+    const trans = ({ x, y, z }: Vi): Vi => ({
+      x: x,
+      z: y * Math.cos(this.theta) + z * Math.sin(this.theta),
+      y: y * Math.sin(this.theta) + z * Math.cos(this.theta)
+    })
+    return this.project(trans({ x, z, y, }), this.perspective)
   }
 }
 

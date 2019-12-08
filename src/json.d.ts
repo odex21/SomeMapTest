@@ -19,7 +19,10 @@ interface Tiles {
   buildableType: number,
   passableMask: number,
   blackboard: any,
-  effects: Effect
+  effects: Effect,
+  events?: {
+    [index: string]: Function[]
+  }
 }
 
 

@@ -1,5 +1,5 @@
 import SomeMap from '..'
-import { BaseOption } from '.'
+import { BaseOption, Perspective, Vi } from '.'
 
 class Base {
   x: number
@@ -16,9 +16,11 @@ class Base {
   scaleProjected: number
   ctx: CanvasRenderingContext2D
   father: SomeMap
-  PROJECTION_CENTER_Y = this.canvasHeight / 2 || 500
-  PROJECTION_CENTER_X = this.canvasWidth / 2 || 500
-  PERSPECTIVE = this.canvasWidth * 0.8 || 1000;
+  perspective: Perspective = {
+    PERSPECTIVE: this.canvasWidth * 0.8 || 1000,
+    PROJECTION_CENTER_X: this.canvasWidth / 2 || 500,
+    PROJECTION_CENTER_Y: this.canvasHeight / 2 || 500
+  }
 
   constructor({ canvasWidth, canvasHeight, father, ctx }: BaseOption) {
     this.canvasWidth = canvasWidth
@@ -41,6 +43,17 @@ class Base {
     this.yProjected = 0 // y coordinate on the 2D world
     this.scaleProjected = 0 // Scale of the element on the 2D world (further = smaller)
     // animate(this, 10000, { z: -20 })
+  }
+
+  project({ x, y, z }: Vi, { PERSPECTIVE, PROJECTION_CENTER_X, PROJECTION_CENTER_Y }: Perspective) {
+    const sizeProjection = PERSPECTIVE / (PERSPECTIVE + y)
+    const xProject = (x * sizeProjection) + PROJECTION_CENTER_X
+    const yProject = (z * sizeProjection) + PROJECTION_CENTER_Y
+    return {
+      size: sizeProjection,
+      x: xProject,
+      y: yProject
+    }
   }
 
 }
