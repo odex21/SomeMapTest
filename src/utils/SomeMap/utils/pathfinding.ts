@@ -58,7 +58,7 @@ const checkObstacle = (x1: number, y1: number, x2: number, y2: number, grid: Gri
 
 }
 
-const pos2Point = (p: RoutePos, height: number) => ({ x: p.col, y: height - p.row + 3 })
+const pos2Point = (p: RoutePos) => ({ x: p.col, y: p.row })
 
 const addRoutes = (route: Route, someMap: SomeMap) => {
 
@@ -91,7 +91,7 @@ const addRoutes = (route: Route, someMap: SomeMap) => {
 
   const fly = route.motionMode === 1
   const tempGrid = fly ? new PF.Grid(grid.width, grid.height) : grid.clone()
-  tempGrid.setWalkableAt(endPos.col, height - endPos.row, true)
+  tempGrid.setWalkableAt(endPos.col, endPos.row, true)
   // this.traps.forEach(([x, y]) => tempGrid.setWalkableAt(x, y, false))
 
   const splitPath = path.reduce((res, cur, index, arr) => {
@@ -116,7 +116,7 @@ const addRoutes = (route: Route, someMap: SomeMap) => {
       nCol = nextPos.col
       reachOffset = nextPos.reachOffset
       const time = pathPoints[index].time ? pathPoints[index].time : pathPoints[index + 1].time
-      res.push({ stop: { pos: pos2Point(cur, height), time } })
+      res.push({ stop: { pos: pos2Point(cur), time } })
     }
 
     let section = [cur]
@@ -137,7 +137,9 @@ const addRoutes = (route: Route, someMap: SomeMap) => {
 
         } else {// 区域内找不到路，全图寻路
           if (tempSection.length === 0) {
-            tempSection = PF.Util.compressPath(finder.findPath(col, row, nCol, nRow, tempGrid)).slice(1) as ArrayPoint[]
+            const last = PF.Util.compressPath(finder.findPath(col, row, nCol, nRow, tempGrid))
+            if (last.length < 1) throw Error('can not find a way to the point')
+            tempSection = last.slice(1) as ArrayPoint[]
           }
 
           [tempCol, tempRow] = tempSection.shift() as ArrayPoint
@@ -157,7 +159,7 @@ const addRoutes = (route: Route, someMap: SomeMap) => {
       if (!isSamePoint(nextPos, section[section.length - 1])) {
         section.push(nextPos)
       }
-    } else if (holeType && nCol && nRow !== height) {
+    } else if (holeType && (nCol + nRow !== 0)) {
       section.push(nextPos)
     }
 
@@ -186,9 +188,7 @@ const addRoutes = (route: Route, someMap: SomeMap) => {
         const next = arr[index + 1]
         const len = Math.sqrt((col - next.col) ** 2 + (row - next.row) ** 2)
         // 防止零长线段导致绘图错误
-        res.push({
-          points: [pos2Point({ col, row }, height), pos2Point(next, height)], time: len * 200 || 10
-        })
+        res.push({ points: [pos2Point({ col, row }), pos2Point(next)], time: len * 200 || 10 })
       }
     })
     return res

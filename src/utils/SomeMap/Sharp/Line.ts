@@ -9,6 +9,7 @@ class Line extends Base {
   width: number
   strokeStyle: string | CanvasGradient = 'rgba(0, 0, 0, 0)'
   path!: Path2D
+  i: number = 0
 
   constructor(opt: LineOption) {
     super(opt)
@@ -37,8 +38,11 @@ class Line extends Base {
   draw() {
     this.ctx.save()
     this.ctx.lineWidth = this.width
-
     this.init()
+    this.ctx.lineCap = 'round'
+    this.ctx.lineDashOffset = -this.i++
+    if (this.i > 16) this.i = 0
+    this.ctx.setLineDash([35, 15])
     this.ctx.strokeStyle = this.strokeStyle
     this.ctx.stroke(this.path)
 

@@ -3,7 +3,6 @@ import Cube from '../Sharp/Cube'
 import { Pos } from '../Sharp'
 import { Options, P, GradientParm } from '.'
 
-
 const setOption = (option: Options, target: any) => {
   Object.keys(option).forEach(e => {
     if (option[e] !== undefined)
@@ -107,6 +106,12 @@ const arrangeCube = (arr: Cube[], defaultX: number) => {
   return res
 }
 
+const loadImage = (src: string): Promise<HTMLImageElement> => new Promise((resovle) => {
+  const img = new Image()
+  img.src = src
+  img.onload = () => resovle(img)
+})
+
 export {
   setOption,
   changeFaceColor,
@@ -115,4 +120,5 @@ export {
   arrangeCube,
   changeXZ,
   gradient,
+  loadImage
 }

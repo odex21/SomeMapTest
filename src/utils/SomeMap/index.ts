@@ -1,6 +1,6 @@
 
 import Cube from './Sharp/Cube'
-import { setOption, sleep, TaskQueue, arrangeCube, changeXZ } from './utils/utils'
+import { setOption, sleep, TaskQueue, arrangeCube, changeXZ, loadImage } from './utils/utils'
 
 
 import { tileInfo } from './data/tailInfo'
@@ -34,7 +34,7 @@ class SomeMap {
   RawRoutes: R[]
   r: number
   xz: (x: Pos) => Pos
-  background: ImageData | any
+  background!: HTMLImageElement
   grid!: Grid
 
   constructor(container: HTMLCanvasElement, theta: number = -75 / 360 * Math.PI, PERSPECTIVE: number, mapData: MapData, routes: R[]) {
@@ -75,7 +75,8 @@ class SomeMap {
     const perspecOpt = { perspective: { PERSPECTIVE, PROJECTION_CENTER_X: width / 2, PROJECTION_CENTER_Y: height / 2 }, theta }
 
     this.setPerspective(perspecOpt)
-    this.loopRoutes()
+    this.loopRoutes(16, 17)
+    // this.loopRoutes(0)
 
 
     this.canvas.addEventListener('click', (evt) => {
@@ -102,14 +103,14 @@ class SomeMap {
 
 
     // todo gird
-    const girds: number[][] = []
+    const grids: number[][] = []
 
     for (let y = height - 1; y > -1; y--) {
       const top = []
       const bottom = []
 
       // todo gird
-      const girdArr: number[] = []
+      const gridArr: number[] = []
 
       for (let x = width - 1; x > -1; x--) {
         const { x: w, y: h } = this.xz({ x, y })
@@ -129,7 +130,7 @@ class SomeMap {
         // todo gird
         const { tileKey: key, passableMask } = tile
         const crossAble = !/end|hole/.test(key) && passableMask === 3 ? 0 : 1
-        girdArr.push(crossAble)
+        gridArr.push(crossAble)
 
         const target = tileInfo[tile.tileKey]
         const cubeHeight = (tile.heightType ? topHeight : bottomHeight) / 2
@@ -152,11 +153,11 @@ class SomeMap {
           })
       }
 
-      girds.push(girdArr.reverse())
+      grids.push(gridArr.reverse())
       this.dots.push(...arrangeCube(bottom, width), ...arrangeCube(top, width))
     }
 
-    this.grid = new Grid(girds.reverse())
+    this.grid = new Grid(grids.reverse())
   }
 
   async loopRoutes(from: number = 0, to: number = this.RawRoutes.length) {
@@ -171,13 +172,14 @@ class SomeMap {
           console.log(route, temp, i)
           console.error(error)
         }
+        console.log(temp)
         if (!route) continue
         for (let j = 0; j < route.length; j++) {
           const { points, time } = route[j]
           if (points) {
             const line = this.addPath(points, time)
             this.routes.push(line)
-            // await line.animate()
+            await line.animate()
           }
         }
 
@@ -195,7 +197,7 @@ class SomeMap {
       points: pArr,
       time
     })
-    setOption({ perspective: this.perspective }, line)
+    setOption({ perspective: this.perspective, theta: this.theta }, line)
     return line
   }
 
@@ -231,12 +233,13 @@ class SomeMap {
           e.draw()
         })
       })
-      Queue.pushTask(() => {
-        this.background = this.context.getImageData(0, 0, this.canvas.width, this.canvas.height)
-        return Promise.resolve()
+
+      Queue.pushTask(async () => {
+        const data = this.canvas.toDataURL()
+        this.background = await loadImage(data)
       })
     } else {
-      this.context.putImageData(this.background, 0, 0)
+      this.context.drawImage(this.background, 0, 0)
     }
 
     this.routes.forEach(e => {

@@ -14,7 +14,6 @@ class PathLine extends Line {
     this.gradientColors = opt.gradientColors //|| this._gradientColors
     this.time = opt.time || 2000
     this.color = Math.random() * 360
-    // this.strokeStyle = 'rgba(0, 0, 0, 0)'
   }
 
   update() {
