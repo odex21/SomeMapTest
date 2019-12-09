@@ -1,12 +1,15 @@
 
 import Cube from './Sharp/Cube'
-import { setOption, sleep, TaskQueue, arrangeCube, changeXZ, addRoutes } from './utils/utils'
+import { setOption, sleep, TaskQueue, arrangeCube, changeXZ } from './utils/utils'
+
+
 import { tileInfo } from './data/tailInfo'
-import { CubeSetOption, Pos, MapMouseEvent } from './Sharp'
+import { CubeSetOption, Pos, MapMouseEvent, LinePoint, Perspective } from './Sharp'
 import PathLine from './Sharp/PathLine'
 import MapCube from './Sharp/MapCube'
 import { Grid } from 'pathfinding'
-import { MapData, Route, R } from '@/json'
+import { MapData, Route, R } from '@/utils/SomeMap/data'
+import { addRoutes } from './utils/pathfinding'
 
 
 
@@ -16,9 +19,7 @@ class SomeMap {
   canvasWidth: number
   canvasHeight: number
   dots: Cube[] = []
-  PERSPECTIVE: number = 0
-  PROJECTION_CENTER_X: number = 0
-  PROJECTION_CENTER_Y: number = 0
+  perspective!: Perspective
   i: number = 0;
   theta: number = 0
   data = {
@@ -30,10 +31,11 @@ class SomeMap {
   drawing: boolean = false
   baseOpt: any
   routes: PathLine[] = []
+  RawRoutes: R[]
   r: number
   xz: (x: Pos) => Pos
   background: ImageData | any
-  grid: Grid
+  grid!: Grid
 
   constructor(container: HTMLCanvasElement, theta: number = -75 / 360 * Math.PI, PERSPECTIVE: number, mapData: MapData, routes: R[]) {
     this.canvas = container
@@ -67,12 +69,14 @@ class SomeMap {
     })
 
 
-    this.grid = this.init(mapData)
+    this.init(mapData)
+    this.RawRoutes = routes
     console.log(mapData, routes)
-    const route = addRoutes(routes[1] as Route, this)
-    console.log(route)
     const perspecOpt = { perspective: { PERSPECTIVE, PROJECTION_CENTER_X: width / 2, PROJECTION_CENTER_Y: height / 2 }, theta }
+
     this.setPerspective(perspecOpt)
+    this.loopRoutes()
+
 
     this.canvas.addEventListener('click', (evt) => {
       for (let i = this.dots.length - 1; i > -1; i--) {
@@ -86,7 +90,6 @@ class SomeMap {
 
   init(mapdata: MapData) {
     // test Path
-    this.addPath([{ x: 0, y: 0 }, { x: 11, y: 7 }])
 
     const r = this.r
     const { width, height } = mapdata
@@ -149,35 +152,59 @@ class SomeMap {
           })
       }
 
-      girds.push(girdArr)
+      girds.push(girdArr.reverse())
       this.dots.push(...arrangeCube(bottom, width), ...arrangeCube(top, width))
     }
 
-    return new Grid(girds)
+    this.grid = new Grid(girds.reverse())
   }
 
+  async loopRoutes(from: number = 0, to: number = this.RawRoutes.length) {
 
-  addPath(arr: Pos[]) {
-    const pArr = arr.map(e => this.xz(e))
+    for (let i = from; i < to; i++) {
+      const temp = this.RawRoutes[i]
+      if (temp) {
+        let route
+        try {
+          route = addRoutes(temp, this)
+        } catch (error) {
+          console.log(route, temp, i)
+          console.error(error)
+        }
+        if (!route) continue
+        for (let j = 0; j < route.length; j++) {
+          const { points, time } = route[j]
+          if (points) {
+            const line = this.addPath(points, time)
+            this.routes.push(line)
+            // await line.animate()
+          }
+        }
+
+      }
+    }
+  }
+
+  addPath(points: LinePoint[], time: number = 2000) {
+    const pArr = points.map(e => this.xz(e))
     const line = new PathLine({
       ...this.baseOpt,
       width: 10,
       y: -50,
       r: this.r,
-      points: pArr
+      points: pArr,
+      time
     })
-    this.routes.push(line)
+    setOption({ perspective: this.perspective }, line)
+    return line
   }
 
   setPerspective(opt: CubeSetOption) {
-
     // todo update canvas width & height
     setOption(opt, this)
     this.dots.forEach(e => e.set(opt))
     this.routes.forEach(e => e.set(opt))
     this.baseFloor.set(opt)
-    console.log(opt)
-
     this.draw(true)
   }
 
@@ -190,8 +217,8 @@ class SomeMap {
     this.context.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
     const Queue = new TaskQueue(1, () => this.drawing = false)
 
-    // Loop through the dots array and draw every dot
 
+    // Loop through the dots array and draw every dot
     if (isMapUpdate) {
       Queue.pushTask(() => {
         this.baseFloor.draw()
@@ -202,7 +229,6 @@ class SomeMap {
         Queue.pushTask(async () => {
           if (!this.drawing) Queue.clear()
           e.draw()
-          // await sleep(80)
         })
       })
       Queue.pushTask(() => {
@@ -215,11 +241,8 @@ class SomeMap {
 
     this.routes.forEach(e => {
       Queue.pushTask(async () => {
-        if (!this.drawing) {
-          Queue.clear()
-        }
+        if (!this.drawing) Queue.clear()
         e.draw()
-        // await sleep(80)
       })
     })
   }

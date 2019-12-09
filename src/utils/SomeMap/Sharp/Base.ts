@@ -29,11 +29,11 @@ class Base {
     this.father = father
     this.ctx = ctx
 
-    this.x = (Math.random() - 0.5) * canvasWidth // Give a random x position
-    this.y = (Math.random() - 0.5) * canvasHeight // Give a random y position
-    this.z = Math.random() * canvasWidth // Give a random z position
-    this.theta = Math.random() * 2 * Math.PI // Random value between [0, 2Pi]
-    this.phi = Math.acos((Math.random() * 2) - 1) // Random value between [0, Pi]
+    this.x = 0//(Math.random() - 0.5) * canvasWidth // Give a random x position
+    this.y = 0//(Math.random() - 0.5) * canvasHeight // Give a random y position
+    this.z = 0//Math.random() * canvasWidth // Give a random z position
+    this.theta = 0// Math.random() * 2 * Math.PI // Random value between [0, 2Pi]
+    this.phi = 0//Math.acos((Math.random() * 2) - 1) // Random value between [0, Pi]
 
 
     this.radius = 10 // Size of our element in the 3D world
@@ -42,7 +42,6 @@ class Base {
     this.xProjected = 0 // x coordinate on the 2D world
     this.yProjected = 0 // y coordinate on the 2D world
     this.scaleProjected = 0 // Scale of the element on the 2D world (further = smaller)
-    // animate(this, 10000, { z: -20 })
   }
 
   project({ x, y, z }: Vi, { PERSPECTIVE, PROJECTION_CENTER_X, PROJECTION_CENTER_Y }: Perspective) {

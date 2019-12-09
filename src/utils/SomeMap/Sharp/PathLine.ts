@@ -4,27 +4,26 @@ import { GradientColor } from '../utils'
 import { gradient } from '../utils/utils'
 
 class PathLine extends Line {
-  private _gradientColors: GradientColor[] = [{ color: 'green', p: 0 }, { color: 'blue', p: 1 }]
+  private _gradientColors: GradientColor[] = [{ color: 'rgba(0, 0, 0, 0)', p: 0 }, { color: 'rgba(0, 0, 0, 0)', p: 1 }]
   run: boolean = true
+  time: number
+  color: number
 
   constructor(opt: PathLineOption) {
     super(opt)
-    this.gradientColors = opt.gradientColors || this._gradientColors
-
-
-    requestAnimationFrame(() => {
-
-      this.animate(2000, 233)
-    })
+    this.gradientColors = opt.gradientColors //|| this._gradientColors
+    this.time = opt.time || 2000
+    this.color = Math.random() * 360
+    // this.strokeStyle = 'rgba(0, 0, 0, 0)'
   }
 
   update() {
     this.father.draw(false)
   }
 
-  animate(time: number, color: number) {
+  animate(time: number = this.time, color: number = this.color) {
+    // console.log(time, color)
     return new Promise((resolve, reject) => {
-
       let start: number, saveTime: number = 0
       const auto = (timeStamp: number) => {
         if (!start) start = timeStamp
@@ -40,14 +39,12 @@ class PathLine extends Line {
           q = 1 - (1 - p) / 0.382
         }
         p = Math.min(p / 0.7, 1)
-
         const colors = [
           { p: 0, color: `hsla(${color}, 100%, 50%, 0.1)` },
           { p: q, color: `hsla(${color}, 100%, 50%, 0.7)` },
           { p: p, color: `hsla(${color}, 100%, 35%, 1)` },
           { p: Math.min(p + 0.02, 1), color: `hsla(${color}, 100%, 50%, 0)` },
         ]
-
         this.gradientColors = colors
         this.update()
 
@@ -67,7 +64,7 @@ class PathLine extends Line {
   set strokeStyle(set) { }
   get strokeStyle() {
     const xyArr = this.absPath
-    if (xyArr.length === 0) return ''
+    if (xyArr.length === 0) return '？？？？？？？'
     return gradient(this.ctx, {
       vector: { p1: xyArr[0], p2: xyArr[this.points.length - 1] },
       colors: this.gradientColors

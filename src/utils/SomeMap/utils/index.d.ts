@@ -1,4 +1,6 @@
-import { Pos } from "../Sharp"
+import { Pos, LinePoint } from "../Sharp"
+import { RoutePos } from "../data"
+import Pathfinding, { Grid } from "pathfinding"
 
 interface Options {
   [index: string]: any
@@ -18,4 +20,27 @@ interface GradientColor {
 interface Vector {
   p1: Pos
   p2: Pos
+}
+
+interface SimplePathPoint extends RoutePos {
+  type?: number
+  reachOffset?: Pos
+}
+
+interface PFResArr {
+  points?: LinePoint[]
+  time?: number
+  stop?: {
+    time: number
+    pos: LinePoint
+  }
+}
+
+interface MyGird extends Grid {
+  nodes: Pathfinding.Node[][]
+}
+
+interface ArrayPoint extends Array<number> {
+  0: number
+  1: number
 }

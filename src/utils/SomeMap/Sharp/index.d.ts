@@ -1,5 +1,6 @@
 import SomeMap from ".."
 import { GradientColor } from "../utils"
+import { TileInfo } from "../data"
 interface BaseOption {
   ctx: CanvasRenderingContext2D
   father: SomeMap
@@ -42,12 +43,13 @@ interface CubeBackState {
 interface LineOption extends BaseOption {
   points: LinePoint[]
   r: number
-  width?: number
   y?: number
+  width?: number
 }
 
 interface PathLineOption extends LineOption {
   gradientColors: GradientColor[]
+  time?: number
 }
 
 type LinePoint = Pos

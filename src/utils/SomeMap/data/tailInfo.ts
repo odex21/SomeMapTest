@@ -1,3 +1,5 @@
+import { TilesInfo } from '.'
+
 const tileInfo: TilesInfo = {
   tile_bigforce: {
     name: '特种战术点',

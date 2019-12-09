@@ -1,5 +1,6 @@
 import Cube from "./Cube"
 import { MapCubeOption } from '.'
+import { TileInfo } from '../data'
 
 class MapCube extends Cube {
   tileInfo: TileInfo

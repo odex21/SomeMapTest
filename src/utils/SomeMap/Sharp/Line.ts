@@ -7,8 +7,8 @@ class Line extends Base {
   points: Pos[]
   absPath: Pos[] = []
   width: number
-  strokeStyle: string | CanvasGradient = 'red'
-  path: Path2D = new Path2D()
+  strokeStyle: string | CanvasGradient = 'rgba(0, 0, 0, 0)'
+  path!: Path2D
 
   constructor(opt: LineOption) {
     super(opt)
@@ -17,8 +17,6 @@ class Line extends Base {
     this.y = opt.y || 20
     this.z = 0
     this.width = opt.width || 5
-
-    this.draw()
   }
 
 
@@ -33,15 +31,16 @@ class Line extends Base {
       if (i === 0) path.moveTo(x, y)
       else path.lineTo(x, y)
     })
-    return path
+    this.path = path
   }
 
   draw() {
-    this.ctx.lineWidth = this.width
     this.ctx.save()
+    this.ctx.lineWidth = this.width
 
+    this.init()
     this.ctx.strokeStyle = this.strokeStyle
-    this.ctx.stroke(this.init())
+    this.ctx.stroke(this.path)
 
     this.ctx.restore()
   }
