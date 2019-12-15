@@ -39,8 +39,8 @@ class SomeMap {
 
   constructor(container: HTMLCanvasElement, theta: number = -75 / 360 * Math.PI, PERSPECTIVE: number, mapData: MapData, routes: R[]) {
     this.canvas = container
+    const { width, height } = this.canvas.getBoundingClientRect()
     this.context = this.canvas.getContext('2d') as CanvasRenderingContext2D
-    const { width, height } = this.canvas
     this.canvasWidth = width
     this.canvasHeight = height
     this.r = Math.min(this.canvas.width / (mapData.width), this.canvas.height / (mapData.height))
