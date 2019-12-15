@@ -1,5 +1,45 @@
 import SomeMap from '..'
-import { BaseOption, Perspective, Vi } from '.'
+
+export interface BaseOption {
+  ctx: CanvasRenderingContext2D
+  father: SomeMap
+  canvasWidth: number
+  canvasHeight: number
+}
+
+export interface Vi {
+  x: number,
+  y: number,
+  z: number
+}
+
+export interface Perspective {
+  PERSPECTIVE: number
+  PROJECTION_CENTER_X: number
+  PROJECTION_CENTER_Y: number
+}
+
+export interface Pos {
+  x: number
+  y: number
+}
+
+export type LinePoint = Pos
+
+export interface Evt {
+  x: number
+  y: number
+}
+
+export interface BaseTodo {
+  [index: string]: Function[]
+}
+
+export interface MapMouseEvent extends MouseEvent {
+  readonly layerX: number
+  readonly layerY: number
+}
+
 
 class Base {
   x: number

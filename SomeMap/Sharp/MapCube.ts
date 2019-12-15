@@ -1,6 +1,9 @@
-import Cube from "./Cube"
-import { MapCubeOption } from '.'
-import { TileInfo } from '../data'
+import Cube, { CubeOption } from "./Cube"
+import { TileInfo } from '../data/tailInfo'
+
+interface MapCubeOption extends CubeOption {
+  tileInfo: TileInfo
+}
 
 class MapCube extends Cube {
   tileInfo: TileInfo

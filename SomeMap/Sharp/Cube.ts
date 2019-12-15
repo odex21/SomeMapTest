@@ -1,11 +1,47 @@
-import { BaseTodo, Pos, FaceColor, CubeOption, CubeSetOption, Vi, CubeAnimationOption, CubeBackState, MapMouseEvent } from '.'
-import Base from './Base'
+import Base, { BaseOption, Perspective, BaseTodo, Pos, MapMouseEvent, Vi } from './Base'
 import { animate as _animate } from '../utils/animate'
 import { setOption, changeFaceColor } from '../utils/utils'
 
+export interface CubeOption extends BaseOption {
+  x: number
+  y: number
+  z: number
+  pos: Pos
+  theta?: number
+  radius?: number
+  cubeWidth?: number
+  cubeHeight?: number
+  cubeLength?: number
+  faceColor?: string
+  text?: string
+}
+
+export interface CubeSetOption {
+  theta?: number
+  perspective?: Perspective
+  faceColor?: FaceColor
+  clicked?: boolean
+}
+
+export interface CubeBackState {
+  attr: CubeSetOption
+  state: {
+    [index: string]: any
+  }
+}
+
+export interface CubeAnimationOption extends CubeSetOption {
+  x?: number
+  y?: number
+  z?: number
+}
+
+export interface FaceColor {
+  [index: number]: string
+}
+
+
 const checkVi = (e: number, offset: number) => e !== undefined ? e : (Math.random() - 0.5) * offset
-
-
 const CUBE_LINES = [[0, 1], [1, 3], [3, 2], [2, 0], [2, 6], [3, 7], [0, 4], [1, 5], [6, 7], [6, 4], [7, 5], [4, 5]]
 const CUBE_FACE = [[0, 1, 3, 2], [0, 1, 5, 4], [3, 2, 6, 7], [4, 5, 7, 6], [0, 2, 6, 4], [1, 3, 7, 5]]
 const CUBE_VERTICES = [[-1, -1, -1], [1, -1, -1], [-1, 1, -1], [1, 1, -1], [-1, -1, 1], [1, -1, 1], [-1, 1, 1], [1, 1, 1]]

@@ -1,14 +1,5 @@
-import { Pos } from "../Sharp"
+import { Pos } from "../Sharp/Base"
 
-interface TileInfo {
-  name: string
-  description: string
-  color: string
-}
-
-interface TilesInfo {
-  [index: string]: TileInfo
-}
 
 interface Effect {
   key: string,
@@ -70,4 +61,15 @@ type R = Route | null
 interface Data {
   mapData: MapData
   routes: R[]
+}
+
+
+export {
+  R,
+  Data,
+  RoutePos,
+  Route,
+  MapData
+
+
 }

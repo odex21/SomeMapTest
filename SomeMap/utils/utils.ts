@@ -1,6 +1,6 @@
 import SomeMap from '..'
 import Cube from '../Sharp/Cube'
-import { Pos } from '../Sharp'
+import { Pos } from '../Sharp/Base'
 import { Options, P, GradientParm } from '.'
 
 const setOption = (option: Options, target: any) => {

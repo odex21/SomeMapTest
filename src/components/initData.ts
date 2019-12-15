@@ -1,14 +1,10 @@
 import { Notification } from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 
-// import testData from './data/mapdata.json'
-// import { MapData, Data, Route } from '@/utils/SomeMap/data'
-
-
-import { default as testData } from '@/utils/SomeMap/data/mapdata.json'
+import { default as testData } from './mapdata.json'
 import { ElNotificationComponent } from 'element-ui/types/notification'
-import MapCube from '@/utils/SomeMap/Sharp/MapCube'
-import { MapData } from '@/utils/SomeMap/data'
+import MapCube from 'SomeMap/Sharp/MapCube'
+import { MapData } from 'SomeMap/data/mapdata'
 const { mapData, routes } = testData
 const mapdata: MapData = Object.assign({}, mapData)
 
@@ -62,7 +58,10 @@ mapdata.tiles.forEach((e) => {
 
 })
 
+import SomeMap from '@/../SomeMap'
+
 export {
   mapData,
-  routes
+  routes,
+  SomeMap
 }

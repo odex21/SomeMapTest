@@ -1,5 +1,5 @@
-import { Pos, LinePoint } from "../Sharp"
-import { RoutePos } from "../data"
+import { Pos, LinePoint } from "../Sharp/Base"
+import { RoutePos } from "../data/mapdata"
 import Pathfinding, { Grid } from "pathfinding"
 
 interface Options {

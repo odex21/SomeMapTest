@@ -1,4 +1,15 @@
-import { TilesInfo } from '.'
+export interface TileInfo {
+  name: string
+  description: string
+  color: string
+}
+
+export interface TilesInfo {
+  [index: string]: TileInfo
+}
+
+
+
 
 const tileInfo: TilesInfo = {
   tile_bigforce: {

@@ -1,7 +1,13 @@
-import Base from "./Base"
-import { LineOption, LinePoint, Vi, Pos, CubeSetOption, Perspective } from '.'
+import Base, { BaseOption, LinePoint, Pos, Vi } from "./Base"
 import { setOption, gradient } from '../utils/utils'
+import { CubeSetOption } from './Cube'
 
+export interface LineOption extends BaseOption {
+  points: LinePoint[]
+  r: number
+  y?: number
+  width?: number
+}
 
 class Line extends Base {
   points: Pos[]

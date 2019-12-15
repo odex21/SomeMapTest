@@ -18,14 +18,7 @@
       "webpack-env",
       "jest"
     ],
-    "paths": {
-      "@/*": [
-        "src/*"
-      ],
-      "SomeMap/*": [
-        "SomeMap/*"
-      ]
-    },
+    "paths": {},
     "lib": [
       "esnext",
       "dom",
@@ -36,11 +29,6 @@
   },
   "include": [
     "SomeMap/**/*.ts",
-    "src/**/*.ts",
-    "src/**/*.tsx",
-    "src/**/*.vue",
-    "tests/**/*.ts",
-    "tests/**/*.tsx"
   ],
   "exclude": [
     "node_modules"

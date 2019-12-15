@@ -1,7 +1,13 @@
-import Line from "./Line"
-import { PathLineOption } from '.'
+import Line, { LineOption } from "./Line"
 import { GradientColor } from '../utils'
 import { gradient } from '../utils/utils'
+
+
+export interface PathLineOption extends LineOption {
+  gradientColors: GradientColor[]
+  time?: number
+  color?: number
+}
 
 class PathLine extends Line {
   private _gradientColors: GradientColor[] = [{ color: 'rgba(0, 0, 0, 0)', p: 0 }, { color: 'rgba(0, 0, 0, 0)', p: 1 }]
@@ -13,7 +19,7 @@ class PathLine extends Line {
     super(opt)
     this.gradientColors = opt.gradientColors //|| this._gradientColors
     this.time = opt.time || 2000
-    this.color = Math.random() * 360
+    this.color = opt.color || Math.random() * 360
   }
 
   update() {

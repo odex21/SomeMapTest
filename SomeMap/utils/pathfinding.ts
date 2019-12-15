@@ -1,5 +1,7 @@
-import PF, { Grid, Finder } from 'pathfinding'
-import { Route, RoutePos } from '@/utils/SomeMap/data'
+import PF from 'pathfinding'
+import { Finder, Grid } from 'pathfinding'
+
+import { Route, RoutePos } from '../data/mapdata'
 import { MyGird, SimplePathPoint, PFResArr, ArrayPoint } from '.'
 import SomeMap from '..'
 

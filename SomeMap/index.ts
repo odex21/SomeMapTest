@@ -1,15 +1,15 @@
 
-import Cube from './Sharp/Cube'
+import Cube, { CubeSetOption } from './Sharp/Cube'
 import { setOption, sleep, TaskQueue, arrangeCube, changeXZ, loadImage } from './utils/utils'
 
 
 import { tileInfo } from './data/tailInfo'
-import { CubeSetOption, Pos, MapMouseEvent, LinePoint, Perspective } from './Sharp'
 import PathLine from './Sharp/PathLine'
 import MapCube from './Sharp/MapCube'
 import { Grid } from 'pathfinding'
-import { MapData, Route, R } from '@/utils/SomeMap/data'
+import { MapData, Route, R } from './data/mapdata'
 import { addRoutes } from './utils/pathfinding'
+import { Perspective, Pos, MapMouseEvent, LinePoint } from './Sharp/Base'
 
 
 
@@ -136,12 +136,12 @@ class SomeMap {
         // todo 还要再拿设置的数据
         // ? 存到tile里
         const target = tileInfo[tile.tileKey]
-        const cubeHeight = (tile.heightType ? topHeight : bottomHeight) / 2
+        const cubeHeight = (tile.heightType ? topHeight + bottomHeight : bottomHeight) / 2
 
         const cube = new MapCube({
           ...baseOpt,
           cubeHeight,
-          y: tile.heightType ? -cubeHeight - bottomHeight : -cubeHeight,
+          y: tile.heightType ? -cubeHeight : -cubeHeight,
           faceColor: target.color,
           tileInfo: target
         })
@@ -177,10 +177,11 @@ class SomeMap {
         }
         console.log(temp)
         if (!route) continue
+        const color = Math.floor(Math.random() * 360)
         for (let j = 0; j < route.length; j++) {
           const { points, time } = route[j]
           if (points) {
-            const line = this.addPath(points, time)
+            const line = this.addPath(points, time, color)
             this.routes.push(line)
             await line.animate()
           }
@@ -190,7 +191,7 @@ class SomeMap {
     }
   }
 
-  addPath(points: LinePoint[], time: number = 2000) {
+  addPath(points: LinePoint[], time: number = 2000, color?: number) {
     const pArr = points.map(e => this.xz(e))
     const line = new PathLine({
       ...this.baseOpt,
@@ -198,7 +199,8 @@ class SomeMap {
       y: -this.r / 3,
       r: this.r,
       points: pArr,
-      time
+      time,
+      color
     })
     setOption({ perspective: this.perspective, theta: this.theta }, line)
     return line

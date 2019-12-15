@@ -17,12 +17,12 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator"
-import SomeMap from "@/utils/SomeMap"
-import { mapData, routes } from "./initData"
+import { mapData, routes, SomeMap } from "./initData"
+
 @Component
 export default class HelloWorld extends Vue {
   @Prop() private msg!: string;
-  t: number = 180;
+  t: number = 140;
   p: number = 3000;
   someMap: any;
   cWidth: number = 1600;
