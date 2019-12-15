@@ -16,7 +16,7 @@ class Cube extends Base {
   height: number
   faces: Path2D[] = []
   faceColor: FaceColor = {
-    0: 'rgba(96, 96, 96, 0.75)',
+    0: 'rgba(48, 48, 48, 0.75)',
     1: 'rgba(200, 32, 32, 0.9)',
     2: 'rgba(41, 41, 41, 0.9)'
   }
@@ -27,6 +27,7 @@ class Cube extends Base {
     attr: {},
     state: {}
   }
+  text: string = ''
 
   constructor(cubeOption: CubeOption) {
     super(cubeOption)
@@ -106,7 +107,23 @@ class Cube extends Base {
     path.closePath()
     ctx.fillStyle = this.faceColor[index] || this.faceColor[0]
     ctx.fill(path)
-    if (index > -1 && index < 2) this.faces[index] = path
+
+    if (index === 1) {
+      // todo feat mobile font-size
+      const { x, y } = this.viToXy([1, -1, 0])
+
+      let text = this.pos.x === 0 ? this.pos.y :
+        this.pos.y === 0 ? this.pos.x : this.text
+      // if(this.pos.x === 0 || this.pos.y === 0) text = this.pos.x ||
+
+      ctx.font = `${this.radius / 2}px sans-serif`
+      ctx.fillStyle = '#313131'
+      ctx.textAlign = 'right'
+      ctx.fillText(text + ' ', x, y)
+    }
+
+    ctx.restore()
+    if (index === 0 || index === 1) this.faces[index] = path
   }
 
   draw() {

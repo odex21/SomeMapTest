@@ -42,7 +42,7 @@ class Line extends Base {
     this.ctx.lineCap = 'round'
     this.ctx.lineDashOffset = -this.i++
     if (this.i > 16) this.i = 0
-    this.ctx.setLineDash([35, 15])
+    this.ctx.setLineDash([this.radius * 3.5, this.radius * 2])
     this.ctx.strokeStyle = this.strokeStyle
     this.ctx.stroke(this.path)
 
@@ -51,6 +51,7 @@ class Line extends Base {
 
   viToXy({ x, y }: Pos) {
     const z = this.y
+
     const trans = ({ x, y, z }: Vi): Vi => ({
       x: x,
       z: y * Math.cos(this.theta) + z * Math.sin(this.theta),

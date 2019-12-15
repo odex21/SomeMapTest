@@ -65,7 +65,6 @@ interface MapData {
   height: number
 }
 
-// import data from './mapdata.json'
 type R = Route | null
 
 interface Data {

@@ -22,7 +22,7 @@ import { mapData, routes } from "./initData"
 @Component
 export default class HelloWorld extends Vue {
   @Prop() private msg!: string;
-  t: number = 160;
+  t: number = 180;
   p: number = 3000;
   someMap: any;
   cWidth: number = 1600;

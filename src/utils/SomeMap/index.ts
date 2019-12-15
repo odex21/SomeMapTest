@@ -46,7 +46,7 @@ class SomeMap {
     this.r = Math.min(this.canvas.width / (mapData.width), this.canvas.height / (mapData.height))
 
     this.xz = changeXZ(mapData.width, mapData.height, this.r, 0.5, 0.5)
-    console.log(width, height)
+    console.log(width, height, this.r)
 
     this.baseOpt = {
       ctx: this.context,
@@ -132,6 +132,9 @@ class SomeMap {
         const crossAble = !/end|hole/.test(key) && passableMask === 3 ? 0 : 1
         gridArr.push(crossAble)
 
+        // 地板数据
+        // todo 还要再拿设置的数据
+        // ? 存到tile里
         const target = tileInfo[tile.tileKey]
         const cubeHeight = (tile.heightType ? topHeight : bottomHeight) / 2
 
@@ -191,8 +194,8 @@ class SomeMap {
     const pArr = points.map(e => this.xz(e))
     const line = new PathLine({
       ...this.baseOpt,
-      width: 10,
-      y: -50,
+      width: this.r / 10,
+      y: -this.r / 3,
       r: this.r,
       points: pArr,
       time
@@ -234,10 +237,7 @@ class SomeMap {
         })
       })
 
-      Queue.pushTask(async () => {
-        const data = this.canvas.toDataURL()
-        this.background = await loadImage(data)
-      })
+
     } else {
       this.context.drawImage(this.background, 0, 0)
     }
@@ -248,6 +248,13 @@ class SomeMap {
         e.draw()
       })
     })
+
+    if (isMapUpdate) {
+      Queue.pushTask(async () => {
+        const data = this.canvas.toDataURL()
+        this.background = await loadImage(data)
+      })
+    }
   }
 }
 

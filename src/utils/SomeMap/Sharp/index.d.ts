@@ -20,6 +20,7 @@ interface CubeOption extends BaseOption {
   cubeHeight?: number
   cubeLength?: number
   faceColor?: string
+  text?: string
 }
 
 interface MapCubeOption extends CubeOption {
