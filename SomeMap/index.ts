@@ -11,7 +11,11 @@ import { MapData, Route, R } from './data/mapdata'
 import { addRoutes } from './utils/pathfinding'
 import { Perspective, Pos, MapMouseEvent, LinePoint } from './Sharp/Base'
 
-
+interface StopRoute {
+  animate: () => Promise<void>
+  set: () => void
+  draw: () => void
+}
 
 class SomeMap {
   canvas: HTMLCanvasElement
@@ -30,7 +34,7 @@ class SomeMap {
   updateArr: Cube[] = []
   drawing: boolean = false
   baseOpt: any
-  routes: PathLine[] = []
+  routes: Map<number, (PathLine | StopRoute)[]> = new Map()
   RawRoutes: R[]
   r: number
   xz: (x: Pos) => Pos
@@ -75,7 +79,7 @@ class SomeMap {
     const perspecOpt = { perspective: { PERSPECTIVE, PROJECTION_CENTER_X: width / 2, PROJECTION_CENTER_Y: height / 2 }, theta }
 
     this.setPerspective(perspecOpt)
-    this.loopRoutes(16, 17)
+    this.loopRoutes(15, 20)
     // this.loopRoutes(0)
 
 
@@ -164,34 +168,36 @@ class SomeMap {
   }
 
   async loopRoutes(from: number = 0, to: number = this.RawRoutes.length) {
-
-    for (let i = from; i < to; i++) {
-      const temp = this.RawRoutes[i]
-      if (temp) {
-        let route
-        try {
-          route = addRoutes(temp, this)
-        } catch (error) {
-          console.log(route, temp, i)
-          console.error(error)
-        }
-        console.log(temp)
-        if (!route) continue
+    this.RawRoutes.slice(from, to)
+      .map((r) => r ? addRoutes(r, this) : [])
+      .map((r, rIndex) => {
         const color = Math.floor(Math.random() * 360)
-        for (let j = 0; j < route.length; j++) {
-          const { points, time } = route[j]
+        const route = r.map(({ points, time }) => {
           if (points) {
-            const line = this.addPath(points, time, color)
-            this.routes.push(line)
-            await line.animate()
-          }
+            return this.initPath(points, time, color)
+          } else return {
+            // 停止方块
+            animate: () => Promise.resolve(),
+            draw: () => { },
+            set: () => { }
+          } as StopRoute
+        })
+        this.routes.set(rIndex, route)
+        const loop = () => {
+          const animations = route.map(e => e.animate.bind(e))
+          const queue = new TaskQueue(1, () => {
+            console.log('next')
+            loop()
+          }, animations)
+          queue.next()
         }
-
-      }
-    }
+        // console.log(animations)
+        if (route.length > 0)
+          loop()
+      })
   }
 
-  addPath(points: LinePoint[], time: number = 2000, color?: number) {
+  initPath(points: LinePoint[], time: number = 2000, color?: number) {
     const pArr = points.map(e => this.xz(e))
     const line = new PathLine({
       ...this.baseOpt,
@@ -210,7 +216,7 @@ class SomeMap {
     // todo update canvas width & height
     setOption(opt, this)
     this.dots.forEach(e => e.set(opt))
-    this.routes.forEach(e => e.set(opt))
+    this.routes.forEach(e => e.forEach(r => r.set(opt)))
     this.baseFloor.set(opt)
     this.draw(true)
   }
@@ -239,15 +245,14 @@ class SomeMap {
         })
       })
 
-
     } else {
-      this.context.drawImage(this.background, 0, 0)
+      this.background && this.context.drawImage(this.background, 0, 0)
     }
 
     this.routes.forEach(e => {
       Queue.pushTask(async () => {
         if (!this.drawing) Queue.clear()
-        e.draw()
+        e.forEach(r => r.draw())
       })
     })
 

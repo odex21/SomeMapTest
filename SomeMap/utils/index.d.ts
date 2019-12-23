@@ -5,7 +5,7 @@ import Pathfinding, { Grid } from "pathfinding"
 interface Options {
   [index: string]: any
 }
-type P = () => Promise<any>
+type P = (...args: any[]) => Promise<any>
 
 interface GradientParm {
   vector: Vector

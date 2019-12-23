@@ -34,7 +34,6 @@ const changeXZ = (width: number, height: number, r: number, xOffset: number, yOf
 const gradient = (ctx: CanvasRenderingContext2D, { vector, colors }: GradientParm) => {
   const { p1, p2 } = vector
   const gradient = ctx.createLinearGradient(p1.x, p1.y, p2.x, p2.y)
-  colors
   colors.forEach(({ color, p }) => {
     gradient.addColorStop(p, color)
   })
@@ -48,7 +47,7 @@ class TaskQueue {
   queue: P[]
   finalTask: Function
 
-  constructor(concurrency: number, finalTask = () => { }, queue = []) {
+  constructor(concurrency: number = 1, finalTask = () => { }, queue: P[] = []) {
     this.concurrency = concurrency
     this.running = 0
     this.queue = queue

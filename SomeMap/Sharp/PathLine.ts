@@ -1,6 +1,7 @@
 import Line, { LineOption } from "./Line"
 import { GradientColor } from '../utils'
 import { gradient } from '../utils/utils'
+import { ElRow } from 'element-ui/types/row'
 
 
 export interface PathLineOption extends LineOption {
@@ -17,7 +18,7 @@ class PathLine extends Line {
 
   constructor(opt: PathLineOption) {
     super(opt)
-    this.gradientColors = opt.gradientColors //|| this._gradientColors
+    this.gradientColors = opt.gradientColors || this._gradientColors
     this.time = opt.time || 2000
     this.color = opt.color || Math.random() * 360
   }
@@ -26,8 +27,9 @@ class PathLine extends Line {
     this.father.draw(false)
   }
 
-  animate(time: number = this.time, color: number = this.color) {
-    // console.log(time, color)
+  animate(_time: number, _color: number) {
+    const time = _time | this.time
+    const color = _color | this.color
     return new Promise((resolve, reject) => {
       let start: number, saveTime: number = 0
       const auto = (timeStamp: number) => {
@@ -78,7 +80,9 @@ class PathLine extends Line {
   }
 
   set gradientColors(colors: GradientColor[]) {
-    this._gradientColors = colors
+    if (colors)
+      this._gradientColors = colors
+    else throw Error('fuck you')
   }
 
   get gradientColors() {
