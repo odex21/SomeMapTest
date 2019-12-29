@@ -24,7 +24,7 @@ class PathLine extends Line {
   }
 
   update() {
-    this.father.draw(false)
+    this.father.update()
   }
 
   animate(_time: number, _color: number) {

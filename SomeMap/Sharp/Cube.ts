@@ -42,9 +42,9 @@ export interface FaceColor {
 
 
 const checkVi = (e: number, offset: number) => e !== undefined ? e : (Math.random() - 0.5) * offset
-const CUBE_LINES = [[0, 1], [1, 3], [3, 2], [2, 0], [2, 6], [3, 7], [0, 4], [1, 5], [6, 7], [6, 4], [7, 5], [4, 5]]
-const CUBE_FACE = [[0, 1, 3, 2], [0, 1, 5, 4], [3, 2, 6, 7], [4, 5, 7, 6], [0, 2, 6, 4], [1, 3, 7, 5]]
-const CUBE_VERTICES = [[-1, -1, -1], [1, -1, -1], [-1, 1, -1], [1, 1, -1], [-1, -1, 1], [1, -1, 1], [-1, 1, 1], [1, 1, 1]]
+export const CUBE_LINES = [[0, 1], [1, 3], [3, 2], [2, 0], [2, 6], [3, 7], [0, 4], [1, 5], [6, 7], [6, 4], [7, 5], [4, 5]]
+export const CUBE_FACE = [[0, 1, 3, 2], [0, 1, 5, 4], [3, 2, 6, 7], [4, 5, 7, 6], [0, 2, 6, 4], [1, 3, 7, 5]]
+export const CUBE_VERTICES = [[-1, -1, -1], [1, -1, -1], [-1, 1, -1], [1, 1, -1], [-1, -1, 1], [1, -1, 1], [-1, 1, 1], [1, 1, 1]]
 
 class Cube extends Base {
   width: number
@@ -100,7 +100,7 @@ class Cube extends Base {
   }
 
   pointInPath(evt: MapMouseEvent) {
-    const hit = this.faces.some(e => this.ctx.isPointInPath(e, evt.layerX, evt.layerY))
+    const hit = this.faces.some(e => this.ctx.isPointInPath(e, evt.layerX * 2, evt.layerY * 2))
     if (hit) {
       this.todo[evt.type] && this.todo[evt.type].forEach(e => e.call(this, this, this.father))
       return hit
@@ -185,8 +185,9 @@ class Cube extends Base {
       ctx.stroke()
     })
 
-    this.drawFace(5)
-    this.drawFace(4)
+    // ? 左右
+    // this.drawFace(5)
+    // this.drawFace(4)
     this.drawFace(0)
     this.drawFace(1)
   }
