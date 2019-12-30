@@ -84,9 +84,12 @@ class SomeMap {
     const perspecOpt = { perspective: { PERSPECTIVE, PROJECTION_CENTER_X: width / 2, PROJECTION_CENTER_Y: height / 2 }, theta }
 
     this.setPerspective(perspecOpt)
-    // this.loopRoutes(15, 17)
-    // this.loopRoute(15)
-    // this.loopRoute(16)
+    setTimeout(() => {
+      // this.loopRoutes(0, 5)
+      this.loopRoute(1, 24)
+      // this.loopRoute(2, 24)
+    }, 1000)
+    // this.loopRoute(1, 250)
     // setTimeout(() => {
     //   this.deleteRoute(16)
     //   console.log(this.routes)
@@ -96,7 +99,7 @@ class SomeMap {
     // }, 2000)
     // this.loopRoutes(0)
 
-    // this.loop()
+    this.loop()
 
 
     this.canvas.addEventListener('click', (evt) => {

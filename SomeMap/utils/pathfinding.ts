@@ -4,7 +4,16 @@ import { Finder, Grid } from 'pathfinding'
 import { Route, RoutePos } from '../data/mapdata'
 import { MyGird, SimplePathPoint, PFResArr, ArrayPoint } from '.'
 import SomeMap from '..'
+import { Pos } from 'SomeMap/Sharp/Base'
 
+const pArray = <T>(arr: T[], index: number, p: (arg: T) => T) => {
+  arr[index] = p(arr[index])
+  return arr
+}
+const mergeReachOffset = (r: Pos | undefined) => (p: SimplePathPoint) => r ? ({
+  col: p.col + r.x,
+  row: p.row + r.y
+}) : p
 
 const isSamePoint = (p1: RoutePos, p2: RoutePos) => p1.col === p2.col && p1.row === p2.col //arr.slice(index + 1).filter(el => el.type !== 3).length !== 1;
 
@@ -36,6 +45,7 @@ const checkObstacle = (x1: number, y1: number, x2: number, y2: number, grid: Gri
   try {
     area[ty2][tx2] = 0
   } catch (error) {
+    // area[Math.round(ty2 * 10) / 10][Math.round(tx2 * 10) / 10] = 0
     console.error(ty2, tx2, area)
   }
 
@@ -96,32 +106,31 @@ const addRoutes = (route: Route, someMap: SomeMap) => {
   tempGrid.setWalkableAt(endPos.col, endPos.row, true)
   // this.traps.forEach(([x, y]) => tempGrid.setWalkableAt(x, y, false))
 
-  const splitPath = path.reduce((res, cur, index, arr) => {
+  let now: SimplePathPoint = path[0]
 
-    if (index + 1 === arr.length) return res
-    let { col, row } = cur
+  const splitPath = path.slice(1).reduce((res, cur, index, arr) => {
 
-    let nextPos = arr[index + 1]
+
+    let { col, row } = now
+    let nextPos = arr[index]
     let { col: nCol, row: nRow, reachOffset } = nextPos
+    console.log(nCol, nRow, index)
 
-    if (!tempGrid.getNodeAt(nCol, nRow).walkable) {
-      nRow = arr[index + 1].row
-      nCol = arr[index + 1].col
+
+    // 现在的点是隧道出口，置换位置
+    if (nextPos.type === 6) {
+      // next++
+      now = cur
+      return res
     }
-
-    // 现在的点是空的，或者是隧道出口，跳过
-    if ((col === 0 && row === 0) || arr[index + 1].type === 6) return res
     // 下一个点是空的，且下下个点不是隧道出口，则这个点就是停止点，顺位到下下下个点，因为前面把type5，也就是进隧道的点过滤了，只有出隧道的点。
-    if (nCol === 0 && nRow === 0 && arr[index + 2].type !== 6) {
-      nextPos = arr[index + 2]
-      nRow = nextPos.row
-      nCol = nextPos.col
-      reachOffset = nextPos.reachOffset
-      const time = pathPoints[index].time ? pathPoints[index].time : pathPoints[index + 1].time
+    if (nCol === 0 && nRow === 0) {
+      const time = pathPoints[index].time ? pathPoints[index].time : 10
       res.push({ stop: { pos: pos2Point(cur), time } })
+      return res
     }
 
-    let section = [cur]
+    let section: SimplePathPoint[] = [now]
     if (fly) section.push(nextPos)
 
     const isNotNeedFind = route.allowDiagonalMove
@@ -165,35 +174,41 @@ const addRoutes = (route: Route, someMap: SomeMap) => {
       section.push(nextPos)
     }
 
-    // 终点的路径偏移
-    if (section.length > 0 && reachOffset) {
-      section[section.length - 1].col += reachOffset.x
-      section[section.length - 1].row -= reachOffset.y
-    }
-
     // 擦墙逻辑，如果找不到路，但是点不是隧道出口， 且下一个点有reachOffset，x,y 不等于0，就擦墙看看，在of1是可以和下一段的起点连上的。
     //?但是of1里实际上那个虫子几乎没机会走去出那条路。 
-    if (section.length === 0 && arr[index + 2].type !== 6 && reachOffset && reachOffset.x !== 0 && reachOffset.y !== 0) {
+    if (section.length === 1) {
       section.push(cur)
-      section.push({ col: nCol + reachOffset.x, row: nRow - reachOffset.y })
+      section.push(nextPos)
+      console.error('fuck you ')
     }
-    section.forEach((el, index, arr) => {
+    console.log(section)
 
-      if (index + 1 < arr.length) {
-        let { col, row } = el
-        // 起点的偏移
-        if (index === 0 && cur.reachOffset) {
-          col += cur.reachOffset.x
-          row -= cur.reachOffset.y
-        }
+    // 起点的偏移
+    section = pArray<SimplePathPoint>(section, 0, mergeReachOffset(now.reachOffset))
 
-        const next = arr[index + 1]
-        const len = Math.sqrt((col - next.col) ** 2 + (row - next.row) ** 2)
-        // 防止零长线段导致绘图错误
-        res.push({ points: [pos2Point({ col, row }), pos2Point(next)], time: len * 200 || 10 })
-      }
-    })
-    return res
+    section = pArray<SimplePathPoint>(section, section.length - 1, mergeReachOffset(reachOffset))
+
+    let tempNow = section.shift() as SimplePathPoint
+
+    now = cur
+    return section.reduce((res, cur, index) => {
+      const { col, row } = tempNow
+      const len = Math.sqrt((col - cur.col) ** 2 + (row - cur.row) ** 2)
+      res.push({ points: [pos2Point(tempNow), pos2Point(cur)], time: len * 200 || 10 })
+      tempNow = cur
+      return res
+    }, res)
+    // console.log(section)
+    // section.forEach((el, index, arr) => {
+    //   if (index + 1 < arr.length) {
+    //     let { col, row } = el
+    //     const next = arr[index + 1]
+    //     const len = Math.sqrt((col - next.col) ** 2 + (row - next.row) ** 2)
+    //     // 防止零长线段导致绘图错误
+    //     res.push({ points: [pos2Point({ col, row }), pos2Point(next)], time: len * 200 || 10 })
+    //   }
+    // })
+    // return res
   }, [] as PFResArr[])
 
   return splitPath
