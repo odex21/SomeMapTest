@@ -1,8 +1,9 @@
 import { Notification } from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 
-import { default as testData } from './otherdata.json'
+// import { default as testData } from './otherdata.json'
 // import { default as testData } from './mapdata.json'
+import { default as testData } from './newdata.json'
 import { ElNotificationComponent } from 'element-ui/types/notification'
 import MapCube from 'SomeMap/Sharp/MapCube'
 import { MapData } from 'SomeMap/data/mapdata'

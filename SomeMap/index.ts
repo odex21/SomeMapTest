@@ -84,11 +84,11 @@ class SomeMap {
     const perspecOpt = { perspective: { PERSPECTIVE, PROJECTION_CENTER_X: width / 2, PROJECTION_CENTER_Y: height / 2 }, theta }
 
     this.setPerspective(perspecOpt)
-    setTimeout(() => {
-      // this.loopRoutes(0, 5)
-      this.loopRoute(1, 24)
-      // this.loopRoute(2, 24)
-    }, 1000)
+    // setTimeout(() => {
+    //   this.loopRoutes(0)
+    //   // this.loopRoute(16, 24)
+    //   // this.loopRoute(2, 24)
+    // }, 1000)
     // this.loopRoute(1, 250)
     // setTimeout(() => {
     //   this.deleteRoute(16)
@@ -240,6 +240,7 @@ class SomeMap {
         return this.initPath(points, time, color, fly)
       } else if (stop) {
         const { x, y } = this.xz(stop.pos)
+        // console.log(stop.time, stop.pos)
         const stopCube = new StopCube({
           x: x,
           z: y,
@@ -248,7 +249,7 @@ class SomeMap {
           canvasWidth,
           canvasHeight,
           radius: this.r / 2,
-          pos: { x, y: y / 2 },
+          pos: { x, y },
           ctx: this.context,
           father: this,
           time: stop.time,

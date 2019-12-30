@@ -45,10 +45,10 @@ class Line extends Base {
     this.ctx.save()
     this.ctx.lineWidth = this.width
     this.init()
-    this.ctx.lineCap = 'round'
+    // this.ctx.lineCap = 'round'
     this.ctx.lineDashOffset = -this.i++
     if (this.i > this.radius * 100) this.i = 0
-    this.ctx.setLineDash([this.radius * 3.5, this.radius * 2])
+    this.ctx.setLineDash([this.radius * 3.5 * 2, this.radius * 2 * 2])
     this.ctx.strokeStyle = this.strokeStyle
     this.ctx.stroke(this.path)
 
