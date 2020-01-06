@@ -19,10 +19,10 @@ interface StopRoute {
 }
 
 class SomeMap {
-  canvas: HTMLCanvasElement
-  context: CanvasRenderingContext2D
-  canvasWidth: number
-  canvasHeight: number
+  canvas!: HTMLCanvasElement
+  context!: CanvasRenderingContext2D
+  canvasWidth!: number
+  canvasHeight!: number
   dots: Cube[] = []
   perspective!: Perspective
   i: number = 0;
@@ -31,7 +31,7 @@ class SomeMap {
     width: 8,
     height: 4
   };
-  baseFloor: Cube
+  baseFloor!: Cube
   drawing: boolean = false
   baseOpt: any
   routes: Map<number, (PathLine | StopRoute | StopCube)[]> = new Map()
@@ -43,47 +43,11 @@ class SomeMap {
   looping: boolean = true
 
   constructor(container: HTMLCanvasElement, theta: number = -75 / 360 * Math.PI, PERSPECTIVE: number, mapData: MapData, routes: R[]) {
-    this.canvas = container
-    let { width, height } = this.canvas.getBoundingClientRect()
-    width *= 2
-    height *= 2
-    this.canvas.width = width
-    this.canvas.height = height
-    this.context = this.canvas.getContext('2d') as CanvasRenderingContext2D
-    this.canvasWidth = width
-    this.canvasHeight = height
+    // console.log(width, height, this.r)
 
 
-    console.log(width, height, this.r)
-
-    this.baseOpt = {
-      ctx: this.context,
-      father: this,
-      canvasWidth: width,
-      canvasHeight: height,
-    }
-
-    const baseHeight = 2
-    this.baseFloor = new Cube({
-      ...this.baseOpt,
-      x: 0,
-      z: 0,
-      y: baseHeight,
-      cubeHeight: baseHeight,
-      faceColor: '#414141',
-      cubeLength: height / 2,
-      cubeWidth: width / 2,
-      pos: { x: 0, y: 0 }
-    })
-
-
-
+    this.config(container, PERSPECTIVE, theta)
     this.init(mapData, routes)
-
-    console.log(mapData, routes)
-    const perspecOpt = { perspective: { PERSPECTIVE, PROJECTION_CENTER_X: width / 2, PROJECTION_CENTER_Y: height / 2 }, theta }
-
-    this.setPerspective(perspecOpt)
     // setTimeout(() => {
     //   this.loopRoutes(0)
     //   // this.loopRoute(16, 24)
@@ -100,14 +64,6 @@ class SomeMap {
     // this.loopRoutes(0)
 
     this.loop()
-
-
-    this.canvas.addEventListener('click', (evt) => {
-      for (let i = this.dots.length - 1; i > -1; i--) {
-        const hit = this.dots[i].pointInPath(evt as MapMouseEvent)
-        if (hit) break
-      }
-    })
   }
 
   loop() {
@@ -117,8 +73,43 @@ class SomeMap {
     })
   }
 
-  init(mapdata: MapData, routes: R[]) {
-    // test Path
+  config(container: HTMLCanvasElement, PERSPECTIVE: number, theta: number) {
+    this.canvas = container
+
+    let { width, height } = this.canvas.getBoundingClientRect()
+    this.canvas.width = width
+    this.canvas.height = height
+    this.context = this.canvas.getContext('2d') as CanvasRenderingContext2D
+    this.canvasWidth = width
+    this.canvasHeight = height
+
+
+
+    this.baseOpt = {
+      ctx: this.context,
+      father: this,
+      canvasWidth: width,
+      canvasHeight: height,
+    }
+
+    this.baseFloor = new Cube({
+      ...this.baseOpt,
+      x: 0,
+      z: 0,
+      y: 2,
+      cubeHeight: 2,
+      faceColor: '#414141',
+      cubeLength: height / 2,
+      cubeWidth: width / 2,
+      pos: { x: 0, y: 0 }
+    })
+
+    const perspecOpt = { perspective: { PERSPECTIVE, PROJECTION_CENTER_X: width / 2, PROJECTION_CENTER_Y: height / 2 }, theta }
+
+    this.setPerspective(perspecOpt)
+  }
+
+  init(mapdata: MapData, routes: R[], ) {
 
     this.r = Math.min(this.canvas.width / (mapdata.width), this.canvas.height / (mapdata.height))
     this.xz = changeXZ(mapdata.width, mapdata.height, this.r, 0.5, 0.5)
@@ -130,7 +121,6 @@ class SomeMap {
     const { width, height } = mapdata
     const { width: canvasWidth, height: canvasHeight } = this.canvas
 
-    console.log(width, height)
 
     const bottomHeight = r * 0.1
     const topHeight = r * 0.25
@@ -199,12 +189,19 @@ class SomeMap {
     if (perspective && theta) {
       this.setPerspective({ perspective, theta })
     }
+
+
+    this.canvas.addEventListener('click', (evt) => {
+      for (let i = this.dots.length - 1; i > -1; i--) {
+        const hit = this.dots[i].pointInPath(evt as MapMouseEvent)
+        if (hit) break
+      }
+    })
   }
 
   deleteRoute(index: number) {
     this.routes.delete(index)
     if (this.routes.size === 0) this.looping = false
-    console.log(this.routes)
   }
 
   deleteAll() {
