@@ -1,17 +1,26 @@
 <template>
   <div class="hello">
     <h1>{{ msg }}</h1>
-    <div class="theta-controller" style="z-index: 10">
-      <label for="theta">Theta</label>
-      <input @input="updateTheta" id="theta" v-model="t" type="range" :min="0" :max="180" />
-      <span>{{t}}</span>
+    <div class="top">
+      <div class="theta-controller" style="z-index: 10">
+        <label for="theta">Theta</label>
+        <input @input="updateTheta" id="theta" v-model="t" type="range" :min="0" :max="180" />
+        <span>{{t}}</span>
+      </div>
+      <div class="theta-controller" style="z-index: 10">
+        <label for="perspective">PERSPECTIVE</label>
+        <input
+          @input="updatePerspective"
+          id="theta"
+          v-model="p"
+          type="range"
+          :min="1000"
+          :max="9000"
+        />
+        <span>{{p}}</span>
+      </div>
     </div>
-    <div class="theta-controller" style="z-index: 10">
-      <label for="perspective">PERSPECTIVE</label>
-      <input @input="updatePerspective" id="theta" v-model="p" type="range" :min="1000" :max="9000" />
-      <span>{{p}}</span>
-    </div>
-    <canvas style="z-index: -2" :width="cWidth" :height="cHeight" ref="map"></canvas>
+    <canvas style="z-index: 10" :width="cWidth" :height="cHeight" ref="map"></canvas>
   </div>
 </template>
 
@@ -75,19 +84,35 @@ export default class HelloWorld extends Vue {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="stylus">
+.hello {
+  margin: 0 auto
+  //max-width: 1200px
+  height: calc(100vh - 60px)
+  background-color: rgba(230, 25, 144, 0.3)
+  display: grid
+  grid-template-columns: 1000px 570px 1fr
+  grid-template-rows: 1fr 1fr
+  grid-gap: 20px 50px
+}
+
+.top {
+  grid-row: 2 / 3
+  grid-column: 2 / 3
+}
+
 .theta-controller {
   z-index: 10
-  display: flex
   align-items: center
   margin: 0 auto
   width: fit-content
 }
 
 canvas {
-  position: fixed
-  top: 0
-  left: 0
-  width: 100vw
-  height: 100vh
+  position: absolute
+  width: 1000px
+  height: 580px
+  grid-row: 1 / 2
+  grid-column: 1 / 2
+  background-color: rgba(24, 230, 144, 0.3)
 }
 </style>
