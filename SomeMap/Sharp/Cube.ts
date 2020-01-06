@@ -100,7 +100,7 @@ class Cube extends Base {
   }
 
   pointInPath(evt: MapMouseEvent) {
-    const hit = this.faces.some(e => this.ctx.isPointInPath(e, evt.layerX * 2, evt.layerY * 2))
+    const hit = this.faces.some(e => this.ctx.isPointInPath(e, evt.layerX, evt.layerY))
     if (hit) {
       this.todo[evt.type] && this.todo[evt.type].forEach(e => e.call(this, this, this.father))
       return hit
