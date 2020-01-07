@@ -28,8 +28,8 @@ export interface BaseTodo {
     [index: string]: Function[];
 }
 export interface MapMouseEvent extends MouseEvent {
-    readonly layerX: number;
-    readonly layerY: number;
+    layerX: number;
+    layerY: number;
 }
 declare class Base {
     x: number;

@@ -1,6 +1,5 @@
 <template>
   <div class="hello">
-    <h1>{{ msg }}</h1>
     <div class="top">
       <div class="theta-controller" style="z-index: 10">
         <label for="theta">Theta</label>
@@ -31,7 +30,7 @@ import { mapData, routes, SomeMap } from "./initData"
 @Component
 export default class HelloWorld extends Vue {
   @Prop() private msg!: string;
-  t: number = 180;
+  t: number = 140;
   p: number = 3000;
   someMap: any;
   cWidth: number = 1600;
@@ -73,9 +72,7 @@ export default class HelloWorld extends Vue {
       routes
     )
 
-    // requestAnimationFrame(() => {
-    //   this.someMap.draw()
-    // })
+    this.someMap.loopRoutes(1, 2)
 
     addEventListener("resize", resize)
   }
@@ -87,17 +84,17 @@ export default class HelloWorld extends Vue {
 .hello {
   margin: 0 auto
   //max-width: 1200px
-  height: calc(100vh - 60px)
+  //height: calc(100vh - 60px)
   background-color: rgba(230, 25, 144, 0.3)
   display: grid
   grid-template-columns: 1000px 570px 1fr
-  grid-template-rows: 1fr 1fr
+  grid-template-rows: auto 1fr
   grid-gap: 20px 50px
 }
 
 .top {
-  grid-row: 2 / 3
-  grid-column: 2 / 3
+  grid-row: 1 / 2
+  grid-column: 1 / 2
 }
 
 .theta-controller {
@@ -108,11 +105,30 @@ export default class HelloWorld extends Vue {
 }
 
 canvas {
-  position: absolute
+  position: relative
   width: 1000px
   height: 580px
-  grid-row: 1 / 2
+  grid-row: 2 / 3
   grid-column: 1 / 2
   background-color: rgba(24, 230, 144, 0.3)
+}
+
+@media screen and (max-width: 700px) {
+  .hello {
+    margin: 0 auto
+    //max-width: 1200px
+    //height: calc(100vh - 60px)
+    background-color: rgba(230, 25, 144, 0.3)
+    display: grid
+    grid-template-columns: 1fr
+    grid-template-rows: auto 1fr
+    grid-gap: 20px 50px
+  }
+
+  canvas {
+    grid-row: 2 / 3
+    width: 100vw
+    height: 56vw
+  }
 }
 </style>

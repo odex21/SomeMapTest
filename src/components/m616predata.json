@@ -1,0 +1,330 @@
+[
+  {
+    "key": "trap_010_frosts",
+    "targetData": {
+      "maxHp": 100,
+      "atk": 0,
+      "def": 0,
+      "magicResistance": 0,
+      "cost": 5,
+      "blockCnt": 0,
+      "moveSpeed": 1,
+      "attackSpeed": 100,
+      "baseAttackTime": 1,
+      "respawnTime": 5,
+      "hpRecoveryPerSec": 0,
+      "spRecoveryPerSec": 1,
+      "maxDeployCount": 1,
+      "maxDeckStackCnt": 0,
+      "tauntLevel": 0,
+      "massLevel": 0,
+      "baseForceLevel": 0,
+      "stunImmune": 0,
+      "silenceImmune": 0
+    },
+    "targetSkill": [
+      {
+        "skillId": "sktok_frosts",
+        "iconId": null,
+        "hidden": false,
+        "levels": [
+          {
+            "name": "寒潮",
+            "rangeId": "x-1",
+            "description": "发射一道寒霜冲击波，使周围我方单位陷入<@ba.vup>寒冷</>状态{freeze}秒",
+            "skillType": 2,
+            "spData": {
+              "spType": 1,
+              "levelUpCost": null,
+              "maxChargeTime": 1,
+              "spCost": 15,
+              "initSp": 0,
+              "increment": 1
+            },
+            "prefabId": "sktok_frosts",
+            "duration": 0,
+            "blackboard": [
+              {
+                "key": "freeze",
+                "value": 10
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "name": "源石冰晶",
+    "description": null,
+    "canUseGeneralPotentialItem": true,
+    "potentialItemId": "",
+    "team": -1,
+    "displayNumber": null,
+    "tokenKey": null,
+    "appellation": "Originium ICrystal",
+    "position": {
+      "row": 2,
+      "col": 8
+    },
+    "tagList": null,
+    "displayLogo": null,
+    "itemUsage": null,
+    "itemDesc": null,
+    "itemObtainApproach": null,
+    "maxPotentialLevel": 0,
+    "rarity": 0,
+    "profession": "TRAP",
+    "trait": null,
+    "phases": [
+      {
+        "characterPrefabKey": "trap_010_frosts",
+        "rangeId": "x-1",
+        "maxLevel": 30,
+        "attributesKeyFrames": [
+          {
+            "level": 1,
+            "data": {
+              "maxHp": 100,
+              "atk": 0,
+              "def": 0,
+              "magicResistance": 0,
+              "cost": 5,
+              "blockCnt": 0,
+              "moveSpeed": 1,
+              "attackSpeed": 100,
+              "baseAttackTime": 1,
+              "respawnTime": 5,
+              "hpRecoveryPerSec": 0,
+              "spRecoveryPerSec": 1,
+              "maxDeployCount": 1,
+              "maxDeckStackCnt": 0,
+              "tauntLevel": 0,
+              "massLevel": 0,
+              "baseForceLevel": 0,
+              "stunImmune": false,
+              "silenceImmune": false
+            }
+          },
+          {
+            "level": 30,
+            "data": {
+              "maxHp": 100,
+              "atk": 0,
+              "def": 0,
+              "magicResistance": 0,
+              "cost": 5,
+              "blockCnt": 0,
+              "moveSpeed": 1,
+              "attackSpeed": 100,
+              "baseAttackTime": 1,
+              "respawnTime": 5,
+              "hpRecoveryPerSec": 0,
+              "spRecoveryPerSec": 1,
+              "maxDeployCount": 1,
+              "maxDeckStackCnt": 0,
+              "tauntLevel": 0,
+              "massLevel": 0,
+              "baseForceLevel": 0,
+              "stunImmune": false,
+              "silenceImmune": false
+            }
+          }
+        ],
+        "evolveCost": null
+      }
+    ],
+    "skills": [
+      {
+        "skillId": "sktok_frosts",
+        "overridePrefabKey": null,
+        "overrideTokenKey": null,
+        "levelUpCostCond": [],
+        "unlockCond": {
+          "phase": 0,
+          "level": 1
+        }
+      }
+    ],
+    "talents": null,
+    "potentialRanks": [],
+    "favorKeyFrames": null,
+    "allSkillLvlup": [],
+    "buildingData": [],
+    "direction": 0,
+    "hidden": true,
+    "alias": "trap_010_frosts#1",
+    "inst": {
+      "characterKey": "trap_010_frosts",
+      "level": 1,
+      "phase": 0,
+      "favorPoint": 0,
+      "potentialRank": 0
+    },
+    "skillIndex": 0,
+    "mainSkillLvl": 1,
+    "skinId": null
+  },
+  {
+    "key": "trap_010_frosts",
+    "targetData": {
+      "maxHp": 100,
+      "atk": 0,
+      "def": 0,
+      "magicResistance": 0,
+      "cost": 5,
+      "blockCnt": 0,
+      "moveSpeed": 1,
+      "attackSpeed": 100,
+      "baseAttackTime": 1,
+      "respawnTime": 5,
+      "hpRecoveryPerSec": 0,
+      "spRecoveryPerSec": 1,
+      "maxDeployCount": 1,
+      "maxDeckStackCnt": 0,
+      "tauntLevel": 0,
+      "massLevel": 0,
+      "baseForceLevel": 0,
+      "stunImmune": 0,
+      "silenceImmune": 0
+    },
+    "targetSkill": [
+      {
+        "skillId": "sktok_frosts",
+        "iconId": null,
+        "hidden": false,
+        "levels": [
+          {
+            "name": "寒潮",
+            "rangeId": "x-1",
+            "description": "发射一道寒霜冲击波，使周围我方单位陷入<@ba.vup>寒冷</>状态{freeze}秒",
+            "skillType": 2,
+            "spData": {
+              "spType": 1,
+              "levelUpCost": null,
+              "maxChargeTime": 1,
+              "spCost": 15,
+              "initSp": 0,
+              "increment": 1
+            },
+            "prefabId": "sktok_frosts",
+            "duration": 0,
+            "blackboard": [
+              {
+                "key": "freeze",
+                "value": 10
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "name": "源石冰晶",
+    "description": null,
+    "canUseGeneralPotentialItem": true,
+    "potentialItemId": "",
+    "team": -1,
+    "displayNumber": null,
+    "tokenKey": null,
+    "appellation": "Originium ICrystal",
+    "position": {
+      "row": 2,
+      "col": 3
+    },
+    "tagList": null,
+    "displayLogo": null,
+    "itemUsage": null,
+    "itemDesc": null,
+    "itemObtainApproach": null,
+    "maxPotentialLevel": 0,
+    "rarity": 0,
+    "profession": "TRAP",
+    "trait": null,
+    "phases": [
+      {
+        "characterPrefabKey": "trap_010_frosts",
+        "rangeId": "x-1",
+        "maxLevel": 30,
+        "attributesKeyFrames": [
+          {
+            "level": 1,
+            "data": {
+              "maxHp": 100,
+              "atk": 0,
+              "def": 0,
+              "magicResistance": 0,
+              "cost": 5,
+              "blockCnt": 0,
+              "moveSpeed": 1,
+              "attackSpeed": 100,
+              "baseAttackTime": 1,
+              "respawnTime": 5,
+              "hpRecoveryPerSec": 0,
+              "spRecoveryPerSec": 1,
+              "maxDeployCount": 1,
+              "maxDeckStackCnt": 0,
+              "tauntLevel": 0,
+              "massLevel": 0,
+              "baseForceLevel": 0,
+              "stunImmune": false,
+              "silenceImmune": false
+            }
+          },
+          {
+            "level": 30,
+            "data": {
+              "maxHp": 100,
+              "atk": 0,
+              "def": 0,
+              "magicResistance": 0,
+              "cost": 5,
+              "blockCnt": 0,
+              "moveSpeed": 1,
+              "attackSpeed": 100,
+              "baseAttackTime": 1,
+              "respawnTime": 5,
+              "hpRecoveryPerSec": 0,
+              "spRecoveryPerSec": 1,
+              "maxDeployCount": 1,
+              "maxDeckStackCnt": 0,
+              "tauntLevel": 0,
+              "massLevel": 0,
+              "baseForceLevel": 0,
+              "stunImmune": false,
+              "silenceImmune": false
+            }
+          }
+        ],
+        "evolveCost": null
+      }
+    ],
+    "skills": [
+      {
+        "skillId": "sktok_frosts",
+        "overridePrefabKey": null,
+        "overrideTokenKey": null,
+        "levelUpCostCond": [],
+        "unlockCond": {
+          "phase": 0,
+          "level": 1
+        }
+      }
+    ],
+    "talents": null,
+    "potentialRanks": [],
+    "favorKeyFrames": null,
+    "allSkillLvlup": [],
+    "buildingData": [],
+    "direction": 0,
+    "hidden": true,
+    "alias": "trap_010_frosts#2",
+    "inst": {
+      "characterKey": "trap_010_frosts",
+      "level": 1,
+      "phase": 0,
+      "favorPoint": 0,
+      "potentialRank": 0
+    },
+    "skillIndex": 0,
+    "mainSkillLvl": 1,
+    "skinId": null
+  }
+]

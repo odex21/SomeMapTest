@@ -36,8 +36,8 @@ export interface BaseTodo {
 }
 
 export interface MapMouseEvent extends MouseEvent {
-  readonly layerX: number
-  readonly layerY: number
+  layerX: number
+  layerY: number
 }
 
 

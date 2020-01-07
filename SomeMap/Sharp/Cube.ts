@@ -12,7 +12,7 @@ export interface CubeOption extends BaseOption {
   cubeWidth?: number
   cubeHeight?: number
   cubeLength?: number
-  faceColor?: string
+  faceColor?: Color
   text?: string
 }
 
@@ -37,8 +37,44 @@ export interface CubeAnimationOption extends CubeSetOption {
 }
 
 export interface FaceColor {
-  [index: number]: string
+  [index: number]: Color
 }
+
+enum rgba {
+  red = 0,
+  green,
+  blue,
+  alpha
+}
+export interface RGBA extends Array<number | undefined> {
+  [rgba.red]: number
+  [rgba.green]: number
+  [rgba.blue]: number
+  [rgba.alpha]?: number
+}
+
+enum hlsa {
+  hue = 0,
+  saturation,
+  lightness,
+  alpha
+}
+export interface HSLA extends Array<number | string | undefined> {
+  [hlsa.hue]: number
+  [hlsa.saturation]: string
+  [hlsa.lightness]: string
+  [hlsa.alpha]?: number
+}
+
+export type Color = HSLA | RGBA
+export type ColorValue = number | string
+
+const isString = (s: any) => typeof s === 'string'
+const c2s = (type: string, c: Color) => `${type}(${c.join(',')})`
+const c2type = (c: Color) => isString(c[1]) && isString(c[2]) ? c[3] ? 'hsla' : 'hsl'
+  : c[3] ? 'rgba' : 'rgb'
+export const toColor = (c: Color | string) => typeof c === 'string' ? c : c2s(c2type(c), c)
+
 
 
 const checkVi = (e: number, offset: number) => e !== undefined ? e : (Math.random() - 0.5) * offset
@@ -52,9 +88,9 @@ class Cube extends Base {
   height: number
   faces: Path2D[] = []
   faceColor: FaceColor = {
-    0: 'rgba(48, 48, 48, 0.75)',
-    1: 'rgba(200, 32, 32, 0.9)',
-    2: 'rgba(41, 41, 41, 0.9)'
+    0: [48, 48, 48, 0.75],
+    1: [200, 32, 32, 0.9],
+    2: [41, 41, 41, 0.9]
   }
   todo: BaseTodo = {}
   pos: Pos
@@ -74,6 +110,8 @@ class Cube extends Base {
     this.width = cubeWidth || this.radius
     this.height = cubeHeight || radius || 10
     this.length = cubeLength || this.radius
+    if (cubeOption.text)
+      this.text = cubeOption.text
 
     this.x = checkVi(x, canvasWidth)
     this.y = checkVi(y, canvasHeight)
@@ -99,8 +137,8 @@ class Cube extends Base {
     setOption(opt, this)
   }
 
-  pointInPath(evt: MapMouseEvent) {
-    const hit = this.faces.some(e => this.ctx.isPointInPath(e, evt.layerX, evt.layerY))
+  pointInPath(evt: { x: number, y: number, type: string }) {
+    const hit = this.faces.some(e => this.ctx.isPointInPath(e, evt.x, evt.y))
     if (hit) {
       this.todo[evt.type] && this.todo[evt.type].forEach(e => e.call(this, this, this.father))
       return hit
@@ -141,7 +179,8 @@ class Cube extends Base {
       else path.lineTo(x, y)
     })
     path.closePath()
-    ctx.fillStyle = this.faceColor[index] || this.faceColor[0]
+    const color = this.faceColor[index] || this.faceColor[0]
+    ctx.fillStyle = toColor(color)
     ctx.fill(path)
 
     if (index === 1) {
@@ -152,7 +191,7 @@ class Cube extends Base {
         this.pos.y === 0 ? this.pos.x : this.text
       // if(this.pos.x === 0 || this.pos.y === 0) text = this.pos.x ||
 
-      ctx.font = `${this.radius / 2}px sans-serif`
+      ctx.font = `${this.text.length > 3 ? this.radius / 3 : this.radius / 2}px sans-serif`
       ctx.fillStyle = '#313131'
       ctx.textAlign = 'right'
       ctx.fillText(text + ' ', x, y)

@@ -37,16 +37,16 @@ interface Route {
 
 
 interface Tiles {
-  tileKey: string,
-  heightType: number,
-  buildableType: number,
-  passableMask: number,
-  blackboard: any,
-  effects: Effect | null,
+  tileKey: string
+  heightType: number
+  buildableType: number
+  passableMask: number
+  blackboard: any
+  effects: Effect | null
   events?: {
     [index: string]: Function[]
   }
-  [index: string]: any
+  extra?: any
 }
 
 interface MapData {
@@ -69,7 +69,7 @@ export {
   Data,
   RoutePos,
   Route,
-  MapData
-
+  MapData,
+  Tiles
 
 }

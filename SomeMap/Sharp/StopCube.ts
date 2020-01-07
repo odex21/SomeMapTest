@@ -1,4 +1,4 @@
-import Cube, { CubeOption, CUBE_FACE, CUBE_VERTICES, FaceColor } from './Cube'
+import Cube, { CubeOption, CUBE_FACE, CUBE_VERTICES, FaceColor, toColor } from './Cube'
 
 
 interface StopCubeOption extends CubeOption {
@@ -11,7 +11,7 @@ class StopCube extends Cube {
   constructor(opt: StopCubeOption) {
     super(opt)
     this.time = opt.time
-    this.faceColor[0] = 'rgba(41, 230, 41, 0.3)'
+    this.faceColor[0] = [41, 230, 41, 0.3]
 
   }
 
@@ -24,7 +24,8 @@ class StopCube extends Cube {
       else path.lineTo(x, y)
     })
     path.closePath()
-    ctx.fillStyle = this.faceColor[index] || this.faceColor[0]
+    const color = this.faceColor[index] || this.faceColor[0]
+    ctx.fillStyle = toColor(color)
     ctx.fill(path)
 
     if (index === 1) {

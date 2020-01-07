@@ -39,7 +39,7 @@ interface Tiles {
     events?: {
         [index: string]: Function[];
     };
-    [index: string]: any;
+    extra?: any;
 }
 interface MapData {
     map: number[][];
@@ -52,4 +52,4 @@ interface Data {
     mapData: MapData;
     routes: R[];
 }
-export { R, Data, RoutePos, Route, MapData };
+export { R, Data, RoutePos, Route, MapData, Tiles };

@@ -41,28 +41,12 @@ class SomeMap {
   background!: HTMLImageElement
   grid!: Grid
   looping: boolean = true
+  scale: number = 1.5
 
   constructor(container: HTMLCanvasElement, theta: number = -75 / 360 * Math.PI, PERSPECTIVE: number, mapData: MapData, routes: R[]) {
     // console.log(width, height, this.r)
-
-
     this.config(container, PERSPECTIVE, theta)
     this.init(mapData, routes)
-    // setTimeout(() => {
-    //   this.loopRoutes(0)
-    //   // this.loopRoute(16, 24)
-    //   // this.loopRoute(2, 24)
-    // }, 1000)
-    // this.loopRoute(1, 250)
-    // setTimeout(() => {
-    //   this.deleteRoute(16)
-    //   console.log(this.routes)
-    //   setTimeout(() => {
-    //     this.loopRoute(20)
-    //   }, 2000)
-    // }, 2000)
-    // this.loopRoutes(0)
-
     this.loop()
   }
 
@@ -77,6 +61,8 @@ class SomeMap {
     this.canvas = container
 
     let { width, height } = this.canvas.getBoundingClientRect()
+    width *= this.scale
+    height *= this.scale
     this.canvas.width = width
     this.canvas.height = height
     this.context = this.canvas.getContext('2d') as CanvasRenderingContext2D
@@ -159,15 +145,16 @@ class SomeMap {
         // 地板数据
         // todo 还要再拿设置的数据
         // ? 存到tile里
-        const target = tileInfo[tile.tileKey]
+        const target = tile.extra || tileInfo[tile.tileKey]
         const cubeHeight = (tile.heightType ? topHeight + bottomHeight : bottomHeight) / 2
-
+        const text = tile.extra?.name
         const cube = new MapCube({
           ...baseOpt,
           cubeHeight,
           y: tile.heightType ? -cubeHeight : -cubeHeight,
           faceColor: target.color,
-          tileInfo: target
+          tileInfo: target,
+          text
         })
 
         if (tile.heightType) top.push(cube)
@@ -192,8 +179,15 @@ class SomeMap {
 
 
     this.canvas.addEventListener('click', (evt) => {
+      const temp = evt as MapMouseEvent
+      const e = {
+        x: temp.layerX * this.scale,
+        y: temp.layerY * this.scale,
+        type: temp.type
+      }
+      // todo 
       for (let i = this.dots.length - 1; i > -1; i--) {
-        const hit = this.dots[i].pointInPath(evt as MapMouseEvent)
+        const hit = this.dots[i].pointInPath(e)
         if (hit) break
       }
     })
@@ -250,7 +244,7 @@ class SomeMap {
           ctx: this.context,
           father: this,
           time: stop.time,
-          faceColor: 'rgba(144,230, 13, 0.7)'
+          faceColor: [color, '100%', '50%', 0.3]
         })
         setOption({ perspective: this.perspective, theta: this.theta }, stopCube)
         return stopCube

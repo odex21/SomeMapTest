@@ -1,4 +1,4 @@
-import Base, { BaseOption, Perspective, BaseTodo, Pos, MapMouseEvent } from './Base';
+import Base, { BaseOption, Perspective, BaseTodo, Pos } from './Base';
 export interface CubeOption extends BaseOption {
     x: number;
     y: number;
@@ -9,7 +9,7 @@ export interface CubeOption extends BaseOption {
     cubeWidth?: number;
     cubeHeight?: number;
     cubeLength?: number;
-    faceColor?: string;
+    faceColor?: Color;
     text?: string;
 }
 export interface CubeSetOption {
@@ -30,8 +30,35 @@ export interface CubeAnimationOption extends CubeSetOption {
     z?: number;
 }
 export interface FaceColor {
-    [index: number]: string;
+    [index: number]: Color;
 }
+declare enum rgba {
+    red = 0,
+    green = 1,
+    blue = 2,
+    alpha = 3
+}
+export interface RGBA extends Array<number | undefined> {
+    [rgba.red]: number;
+    [rgba.green]: number;
+    [rgba.blue]: number;
+    [rgba.alpha]?: number;
+}
+declare enum hlsa {
+    hue = 0,
+    saturation = 1,
+    lightness = 2,
+    alpha = 3
+}
+export interface HSLA extends Array<number | string | undefined> {
+    [hlsa.hue]: number;
+    [hlsa.saturation]: string;
+    [hlsa.lightness]: string;
+    [hlsa.alpha]?: number;
+}
+export declare type Color = HSLA | RGBA;
+export declare type ColorValue = number | string;
+export declare const toColor: (c: string | HSLA | RGBA) => string;
 export declare const CUBE_LINES: number[][];
 export declare const CUBE_FACE: number[][];
 export declare const CUBE_VERTICES: number[][];
@@ -49,7 +76,11 @@ declare class Cube extends Base {
     constructor(cubeOption: CubeOption);
     restore(): void;
     set(opt: CubeSetOption): void;
-    pointInPath(evt: MapMouseEvent): boolean;
+    pointInPath(evt: {
+        x: number;
+        y: number;
+        type: string;
+    }): boolean;
     on(type: keyof GlobalEventHandlersEventMap, todo: Function): void;
     animate(opt: CubeAnimationOption): void;
     viToXy([x, y, z]: number[]): {

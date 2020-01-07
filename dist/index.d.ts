@@ -32,6 +32,7 @@ declare class SomeMap {
     background: HTMLImageElement;
     grid: Grid;
     looping: boolean;
+    scale: number;
     constructor(container: HTMLCanvasElement, theta: number | undefined, PERSPECTIVE: number, mapData: MapData, routes: R[]);
     loop(): void;
     config(container: HTMLCanvasElement, PERSPECTIVE: number, theta: number): void;

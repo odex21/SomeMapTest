@@ -1,5 +1,5 @@
 import SomeMap from '..'
-import Cube from '../Sharp/Cube'
+import Cube, { RGBA, HSLA, Color, ColorValue } from '../Sharp/Cube'
 import { Pos } from '../Sharp/Base'
 import { Options, P, GradientParm } from '.'
 
@@ -10,11 +10,15 @@ const setOption = (option: Options, target: any) => {
   })
 }
 
-const changeFaceColor = (color: string = 'rgba(0, 255, 0, 1)') => (cube: Cube, context: SomeMap) => {
+
+const mutiRadio = (s: number | string, radio: number) => typeof s === 'number' ? s * radio : +s.slice(0, -1) * radio + s.slice(-1)
+const deepColor = (raw: Color, radio: number): Color => (<any>raw).map((e: ColorValue) => mutiRadio(e, radio))
+
+const changeFaceColor = (color?: Color) => (cube: Cube, context: SomeMap) => {
   if (!cube.backUpAttr.state.changed) {
     setOption({ faceColor: cube.faceColor }, cube.backUpAttr.attr)
     setOption({ changed: true }, cube.backUpAttr.state)
-    cube.faceColor[1] = color
+    cube.faceColor[1] = color || deepColor(cube.faceColor[1], 1.5)
   } else {
     cube.restore()
   }

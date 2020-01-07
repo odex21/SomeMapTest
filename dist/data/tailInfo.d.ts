@@ -1,7 +1,8 @@
+import { Color } from 'SomeMap/Sharp/Cube';
 export interface TileInfo {
     name: string;
     description: string;
-    color: string;
+    color: string | Color;
 }
 export interface TilesInfo {
     [index: string]: TileInfo;

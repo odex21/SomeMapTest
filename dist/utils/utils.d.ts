@@ -1,9 +1,9 @@
 import SomeMap from '..';
-import Cube from '../Sharp/Cube';
+import Cube, { RGBA, HSLA } from '../Sharp/Cube';
 import { Pos } from '../Sharp/Base';
 import { Options, P, GradientParm } from '.';
 declare const setOption: (option: Options, target: any) => void;
-declare const changeFaceColor: (color?: string) => (cube: Cube, context: SomeMap) => void;
+declare const changeFaceColor: (color?: HSLA | RGBA | undefined) => (cube: Cube, context: SomeMap) => void;
 declare const sleep: (time: number) => Promise<unknown>;
 declare const changeXZ: (width: number, height: number, r: number, xOffset: number, yOffset: number) => ({ x, y }: Pos) => Pos;
 declare const gradient: (ctx: CanvasRenderingContext2D, { vector, colors }: GradientParm) => CanvasGradient;
