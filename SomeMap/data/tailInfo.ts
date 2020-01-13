@@ -25,6 +25,11 @@ const tileInfo: TilesInfo = {
     description: '置于其中的干员获得额外的防御力',
     color: [342, '98%', '67%', 1]
   },
+  tile_defup: {
+    name: "防御符文",
+    description: "置于其中的干员获得额外的防御力",
+    color: [342, '98%', '67%', 1]
+  },
   tile_fence: {
     name: '围栏',
     description: '可放置近战单位，不可以通行',

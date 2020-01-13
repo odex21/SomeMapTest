@@ -1,37 +1,11 @@
 # Todo
 
-1. Path 路径对象
-2. Update 状态
-    1. 缓存地图
-    2. 增加update 状态，用以更新地图
+1. 摆箱子的状态切换
 
+# 打包
+1. 需要自行在构建中把这个包加入babel规则
 
-# ts-test
+# Example
 
-## Project setup
-```
-npm install
-```
+yarn serve
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Run your unit tests
-```
-npm run test:unit
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).

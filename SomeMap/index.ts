@@ -18,6 +18,19 @@ interface StopRoute {
   draw: () => void
 }
 
+const clickHandler = (instance: SomeMap) => (evt: MapMouseEvent) => {
+  const e = {
+    x: evt.layerX * instance.scale,
+    y: evt.layerY * instance.scale,
+    type: evt.type
+  }
+  // todo 
+  for (let i = instance.dots.length - 1; i > -1; i--) {
+    const hit = instance.dots[i].pointInPath(e)
+    if (hit) break
+  }
+}
+
 class SomeMap {
   canvas!: HTMLCanvasElement
   context!: CanvasRenderingContext2D
@@ -41,7 +54,8 @@ class SomeMap {
   background!: HTMLImageElement
   grid!: Grid
   looping: boolean = true
-  scale: number = 1.5
+  scale: number = 2
+  defaultHandler: (evt: MouseEvent | any) => void = clickHandler(this)
 
   constructor(container: HTMLCanvasElement, theta: number = -75 / 360 * Math.PI, PERSPECTIVE: number, mapData: MapData, routes: R[]) {
     // console.log(width, height, this.r)
@@ -61,6 +75,7 @@ class SomeMap {
     this.canvas = container
 
     let { width, height } = this.canvas.getBoundingClientRect()
+    if (width > 1000) this.scale = 1.5
     width *= this.scale
     height *= this.scale
     this.canvas.width = width
@@ -109,7 +124,7 @@ class SomeMap {
 
 
     const bottomHeight = r * 0.1
-    const topHeight = r * 0.25
+    const topHeight = r * 0.3
 
 
     // todo gird
@@ -145,7 +160,19 @@ class SomeMap {
         // 地板数据
         // todo 还要再拿设置的数据
         // ? 存到tile里
-        const target = tile.extra || tileInfo[tile.tileKey]
+        let target = tile.extra || tileInfo[tile.tileKey]
+        if (!target) {
+          console.error('can not find data')
+          console.log(tile.tileKey)
+          target = {
+            color: 'black',
+          }
+        }
+
+        if (tile.blackboard) {
+          target.blackboard = tile.blackboard
+        }
+
         const cubeHeight = (tile.heightType ? topHeight + bottomHeight : bottomHeight) / 2
         const text = tile.extra?.name
         const cube = new MapCube({
@@ -178,19 +205,8 @@ class SomeMap {
     }
 
 
-    this.canvas.addEventListener('click', (evt) => {
-      const temp = evt as MapMouseEvent
-      const e = {
-        x: temp.layerX * this.scale,
-        y: temp.layerY * this.scale,
-        type: temp.type
-      }
-      // todo 
-      for (let i = this.dots.length - 1; i > -1; i--) {
-        const hit = this.dots[i].pointInPath(e)
-        if (hit) break
-      }
-    })
+    this.canvas.removeEventListener('click', this.defaultHandler)
+    this.canvas.addEventListener('click', this.defaultHandler)
   }
 
   deleteRoute(index: number) {
@@ -235,7 +251,7 @@ class SomeMap {
         const stopCube = new StopCube({
           x: x,
           z: y,
-          y: fly ? -this.r : -this.r / 3,
+          y: fly ? -this.r / 1.2 : -this.r / 4,
           cubeHeight: this.r * 0.05 / 2,
           canvasWidth,
           canvasHeight,
@@ -244,7 +260,7 @@ class SomeMap {
           ctx: this.context,
           father: this,
           time: stop.time,
-          faceColor: [color, '100%', '50%', 0.3]
+          faceColor: [color, '100%', '50%', 0.7]
         })
         setOption({ perspective: this.perspective, theta: this.theta }, stopCube)
         return stopCube
@@ -272,7 +288,7 @@ class SomeMap {
     const line = new PathLine({
       ...this.baseOpt,
       width: this.r / 10,
-      y: fly ? -this.r : -this.r / 2,
+      y: fly ? -this.r : -this.r / 3,
       r: this.r,
       points: pArr,
       time,

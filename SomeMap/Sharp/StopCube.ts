@@ -11,7 +11,7 @@ class StopCube extends Cube {
   constructor(opt: StopCubeOption) {
     super(opt)
     this.time = opt.time
-    this.faceColor[0] = [41, 230, 41, 0.3]
+    this.faceColor[0] = [41, 230, 41, 0.1]
 
   }
 
@@ -30,13 +30,13 @@ class StopCube extends Cube {
 
     if (index === 1) {
       // todo feat mobile font-size
-      const { x, y } = this.viToXy([0, 0, 0])
+      const { x, y } = this.viToXy(this.time > 99 ? [0, 0, -0.2] : [0.1, 0, -0.2])
 
       let text = this.pos.x === 0 ? this.pos.y :
         this.pos.y === 0 ? this.pos.x : this.text
       // if(this.pos.x === 0 || this.pos.y === 0) text = this.pos.x ||
 
-      ctx.font = `${this.radius / 2}px sans-serif`
+      ctx.font = `${this.radius / 1.2}px sans-serif`
       ctx.fillStyle = 'white'
       ctx.textAlign = 'center'
       ctx.fillText(this.time + 's ', x, y)

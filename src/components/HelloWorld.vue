@@ -19,7 +19,9 @@
         <span>{{p}}</span>
       </div>
     </div>
-    <canvas style="z-index: 10" :width="cWidth" :height="cHeight" ref="map"></canvas>
+    <div class="canvas-wrapper">
+      <canvas style="z-index: 10" :width="cWidth" :height="cHeight" ref="map"></canvas>
+    </div>
   </div>
 </template>
 
@@ -56,12 +58,16 @@ export default class HelloWorld extends Vue {
   async mounted(): Promise<void> {
     const resize = () => {
       console.log("resize")
-      const { innerWidth, innerHeight } = window
-      this.cWidth = innerWidth
-      this.cHeight = innerHeight
+      // const { innerWidth, innerHeight } = window
+      // this.cWidth = innerWidth
+      // this.cHeight = innerHeight
+      const instance = this.someMap
+      instance.config(this.$refs.map, this.p, this.theta * 2)
+      instance.init(mapData, routes)
+      instance.looping = true
+      instance.loop()
     }
 
-    resize()
 
     await this.$nextTick()
     this.someMap = new SomeMap(
@@ -72,10 +78,15 @@ export default class HelloWorld extends Vue {
       routes
     )
 
-    this.someMap.loopRoutes(1, 2)
 
     addEventListener("resize", resize)
+    resize()
+    this.someMap.loopRoutes(1, 2)
+
+
   }
+
+
 }
 </script>
 
@@ -104,13 +115,21 @@ export default class HelloWorld extends Vue {
   width: fit-content
 }
 
-canvas {
+.canvas-wrapper {
   position: relative
   width: 1000px
   height: 580px
   grid-row: 2 / 3
   grid-column: 1 / 2
   background-color: rgba(24, 230, 144, 0.3)
+
+  canvas {
+    position: absolute
+    left: -10%
+    top: -10%
+    width: 120%
+    height: 120%
+  }
 }
 
 @media screen and (max-width: 700px) {
@@ -125,7 +144,7 @@ canvas {
     grid-gap: 20px 50px
   }
 
-  canvas {
+  .canvas-wrapper {
     grid-row: 2 / 3
     width: 100vw
     height: 56vw

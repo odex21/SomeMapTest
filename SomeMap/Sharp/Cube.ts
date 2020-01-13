@@ -94,7 +94,7 @@ class Cube extends Base {
   }
   todo: BaseTodo = {}
   pos: Pos
-  strokeStyle: string = 'rgb(64, 170, 191, 0.5)'
+  strokeStyle: string = 'rgba(64, 170, 191, 0.5)'
   backUpAttr: CubeBackState = {
     attr: {},
     state: {}
@@ -185,14 +185,14 @@ class Cube extends Base {
 
     if (index === 1) {
       // todo feat mobile font-size
-      const { x, y } = this.viToXy([1, -1, 0])
 
       let text = this.pos.x === 0 ? this.pos.y :
         this.pos.y === 0 ? this.pos.x : this.text
       // if(this.pos.x === 0 || this.pos.y === 0) text = this.pos.x ||
+      const { x, y } = this.viToXy(this.text.length > 3 ? [1, -1, -0.2] : [0.5, 0, -0.1])
 
-      ctx.font = `${this.text.length > 3 ? this.radius / 3 : this.radius / 2}px sans-serif`
-      ctx.fillStyle = '#313131'
+      ctx.font = `${this.text.length > 2 ? this.radius / 2.3 : this.radius / 1.2}px sans-serif`
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.7)'
       ctx.textAlign = 'right'
       ctx.fillText(text + ' ', x, y)
     }
@@ -209,6 +209,9 @@ class Cube extends Base {
       return
     }
 
+    ctx.save()
+    this.ctx.lineWidth = 1
+    ctx.strokeStyle = this.strokeStyle
 
     CUBE_LINES.forEach((line, index) => {
       if (index === 2 || index === 8) return
@@ -216,7 +219,7 @@ class Cube extends Base {
       const v1Project = this.viToXy(CUBE_VERTICES[line[0]])
       const v2Project = this.viToXy(CUBE_VERTICES[line[1]])
 
-      this.ctx.lineWidth = 2
+
       ctx.beginPath()
       ctx.moveTo(v1Project.x, v1Project.y)
       ctx.lineTo(v2Project.x, v2Project.y)
@@ -224,6 +227,7 @@ class Cube extends Base {
       ctx.stroke()
     })
 
+    ctx.restore()
     // ? 左右
     // this.drawFace(5)
     // this.drawFace(4)
