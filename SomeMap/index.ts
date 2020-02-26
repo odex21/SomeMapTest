@@ -53,7 +53,7 @@ class SomeMap {
   xz!: (x: Pos) => Pos
   background!: HTMLImageElement
   grid!: Grid
-  looping: boolean = true
+  looping: boolean = false
   scale: number = 2
   defaultHandler: (evt: MouseEvent | any) => void = clickHandler(this)
 
@@ -61,13 +61,19 @@ class SomeMap {
     // console.log(width, height, this.r)
     this.config(container, PERSPECTIVE, theta)
     this.init(mapData, routes)
-    this.loop()
+    this.startLoop()
   }
 
-  loop() {
+  startLoop() {
+    if (this.looping) return
+    this.looping = true
+    this._loop()
+  }
+
+  _loop() {
     requestAnimationFrame(() => {
       this.draw(false)
-        .then(() => this.looping && this.loop())
+        .then(() => this.looping && this._loop())
     })
   }
 
@@ -231,8 +237,7 @@ class SomeMap {
     } else {
       const target = this.RawRoutes[index]
       if (target) {
-        this.looping = true
-        this.loop()
+        this.startLoop()
         this.initRoute(target, index, color)
       }
     }
@@ -308,10 +313,7 @@ class SomeMap {
   }
 
   update() {
-    /*     if (!this.looping) {
-          this.looping = true
-          this.loop()
-        } */
+
   }
 
   async draw(isMapUpdate: boolean) {

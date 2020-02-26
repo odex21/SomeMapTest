@@ -31,10 +31,10 @@ import { mapData, routes, SomeMap } from "./initData"
 
 @Component
 export default class HelloWorld extends Vue {
-  @Prop() private msg!: string;
+  @Prop() private msg!: string
   t: number = 140;
   p: number = 3000;
-  someMap: any;
+  someMap: any
   cWidth: number = 1600;
   cHeight: number = 900;
   inited: boolean = false;
@@ -64,8 +64,7 @@ export default class HelloWorld extends Vue {
       const instance = this.someMap
       instance.config(this.$refs.map, this.p, this.theta * 2)
       instance.init(mapData, routes)
-      instance.looping = true
-      instance.loop()
+      instance.startLoop()
     }
 
 
@@ -81,8 +80,16 @@ export default class HelloWorld extends Vue {
 
     addEventListener("resize", resize)
     resize()
-    this.someMap.loopRoutes(1, 2)
-
+    const delay = (func: Function, time: number) => {
+      setTimeout(() => {
+        func()
+      }, time)
+    }
+    for (let i = 0; i < 30; i++) {
+      delay(() => {
+        this.someMap.loopRoute(i)
+      }, i * 1000)
+    }
 
   }
 
