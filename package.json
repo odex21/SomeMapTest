@@ -1,6 +1,6 @@
 {
   "name": "kkdy-somemap",
-  "version": "0.3.11",
+  "version": "0.3.12",
   "main": "dist/index.js",
   "scripts": {
     "serve": "vue-cli-service serve",

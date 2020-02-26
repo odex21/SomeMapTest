@@ -35,7 +35,8 @@ declare class SomeMap {
     scale: number;
     defaultHandler: (evt: MouseEvent | any) => void;
     constructor(container: HTMLCanvasElement, theta: number | undefined, PERSPECTIVE: number, mapData: MapData, routes: R[]);
-    loop(): void;
+    startLoop(): void;
+    _loop(): void;
     config(container: HTMLCanvasElement, PERSPECTIVE: number, theta: number): void;
     init(mapdata: MapData, routes: R[]): void;
     deleteRoute(index: number): void;
