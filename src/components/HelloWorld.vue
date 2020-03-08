@@ -87,7 +87,7 @@ export default class HelloWorld extends Vue {
     }
     for (let i = 0; i < 30; i++) {
       delay(() => {
-        this.someMap.loopRoute(i)
+        this.someMap.loopRoutes()
       }, i * 1000)
     }
 
