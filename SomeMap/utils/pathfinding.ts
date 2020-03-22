@@ -3,7 +3,7 @@ import { Finder, Grid } from 'pathfinding'
 
 import { Route, RoutePos } from '../data/mapdata'
 import { MyGird, SimplePathPoint, PFResArr, ArrayPoint } from '.'
-import SomeMap from '..'
+import { SomeMap } from '../SomeMap'
 import { Pos } from 'SomeMap/Sharp/Base'
 
 const pArray = <T>(arr: T[], index: number, p: (arg: T) => T) => {
@@ -103,7 +103,7 @@ const addRoutes = (route: Route, someMap: SomeMap) => {
   const fly = route.motionMode === 1
   const tempGrid = fly ? new PF.Grid(grid.width, grid.height) : grid.clone()
   tempGrid.setWalkableAt(endPos.col, endPos.row, true)
-  // this.traps.forEach(([x, y]) => tempGrid.setWalkableAt(x, y, false))
+  someMap.traps.forEach(({ x, y }) => tempGrid.setWalkableAt(x, y, false))
 
   let now: SimplePathPoint = startPos
 
@@ -171,23 +171,11 @@ const addRoutes = (route: Route, someMap: SomeMap) => {
 
 
     }
-    // else if (holeType) {
-    //   section.push(nextPos)
-    // }
-    // section.push(nextPos)
     // 终点
     if (!isSamePoint(nextPos, section[section.length - 1])) {
       // console.log(nextPos, section[section.length - 1])
       section.push(nextPos)
     }
-
-    // // //? 擦墙逻辑，如果找不到路
-    // // //?但是of1里实际上那个虫子几乎没机会走去出那条路。 
-    // if (section.length === 1) {
-    //   // section.push(cur)
-    //   console.error('something maybe error ')
-    //   section.push(nextPos)
-    // }
 
     // 偏移
     section = pArray<SimplePathPoint>(section, 0, mergeReachOffset(now.reachOffset))

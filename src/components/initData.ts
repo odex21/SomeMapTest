@@ -76,7 +76,7 @@ mapdata.tiles.forEach((e) => {
 
 })
 
-import SomeMap from '@/../SomeMap'
+import { SomeMap } from '@/../SomeMap'
 
 export {
   mapData,

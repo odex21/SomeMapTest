@@ -85,11 +85,11 @@ export default class HelloWorld extends Vue {
         func()
       }, time)
     }
-    for (let i = 0; i < 30; i++) {
-      delay(() => {
-        this.someMap.loopRoutes()
-      }, i * 1000)
-    }
+    this.someMap.loopRoutes()
+    // for (let i = 0; i < 30; i++) {
+    //   delay(() => {
+    //   }, i * 1000)
+    // }
 
   }
 
@@ -132,10 +132,10 @@ export default class HelloWorld extends Vue {
 
   canvas {
     position: absolute
-    left: -10%
-    top: -10%
-    width: 120%
-    height: 120%
+    top: 0
+    left: 0
+    width: 100%
+    height: 100%
   }
 }
 
