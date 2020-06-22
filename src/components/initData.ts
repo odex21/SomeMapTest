@@ -1,7 +1,8 @@
 import { Notification } from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 
-import { default as testData } from './level_main_07-08.json'
+// import { default as testData } from './otherdata.json'
+import { default as testData } from './level_hard_06-02.json'
 // import { default as testData } from './mapdata.json'
 // import { default as testData } from './newdata.json'
 // import { default as testData } from './d616.json'
@@ -75,7 +76,7 @@ mapdata.tiles.forEach((e) => {
 
 })
 
-import SomeMap from '@/../SomeMap'
+import { SomeMap } from '@/../SomeMap'
 
 export {
   mapData,

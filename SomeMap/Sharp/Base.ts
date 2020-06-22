@@ -1,4 +1,4 @@
-import SomeMap from '..'
+import { SomeMap } from '../SomeMap'
 
 export interface BaseOption {
   ctx: CanvasRenderingContext2D

@@ -1,4 +1,4 @@
-import SomeMap from '..'
+import { SomeMap } from '../SomeMap'
 import Cube, { RGBA, HSLA, Color, ColorValue } from '../Sharp/Cube'
 import { Pos } from '../Sharp/Base'
 import { Options, P, GradientParm } from '.'

@@ -3,7 +3,7 @@ import { Finder, Grid } from 'pathfinding'
 
 import { Route, RoutePos } from '../data/mapdata'
 import { MyGird, SimplePathPoint, PFResArr, ArrayPoint } from '.'
-import SomeMap from '..'
+import { SomeMap } from '../SomeMap'
 import { Pos } from 'SomeMap/Sharp/Base'
 
 const pArray = <T> (arr: T[], index: number, p: (arg: T) => T) => {
@@ -95,7 +95,7 @@ const addRoutes = (route: Route, someMap: SomeMap) => {
   const fly = route.motionMode === 1
   const tempGrid = fly ? new PF.Grid(grid.width, grid.height) : grid.clone()
   tempGrid.setWalkableAt(endPos.col, endPos.row, true)
-  // this.traps.forEach(([x, y]) => tempGrid.setWalkableAt(x, y, false))
+  someMap.traps.forEach(({ x, y }) => tempGrid.setWalkableAt(x, y, false))
 
   let now: SimplePathPoint = startPos
 

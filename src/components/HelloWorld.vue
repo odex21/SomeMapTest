@@ -64,8 +64,7 @@ export default class HelloWorld extends Vue {
       const instance = this.someMap
       instance.config(this.$refs.map, this.p, this.theta * 2)
       instance.init(mapData, routes)
-      instance.looping = true
-      instance.loop()
+      instance.startLoop()
     }
 
 
@@ -81,9 +80,16 @@ export default class HelloWorld extends Vue {
 
     addEventListener("resize", resize)
     resize()
-    this.someMap.loopRoutes(20, 21)
-    // this.someMap.loopRoutes()
-
+    const delay = (func: Function, time: number) => {
+      setTimeout(() => {
+        func()
+      }, time)
+    }
+    this.someMap.loopRoutes()
+    // for (let i = 0; i < 30; i++) {
+    //   delay(() => {
+    //   }, i * 1000)
+    // }
 
   }
 
@@ -126,10 +132,10 @@ export default class HelloWorld extends Vue {
 
   canvas {
     position: absolute
-    left: -10%
-    top: -10%
-    width: 120%
-    height: 120%
+    top: 0
+    left: 0
+    width: 100%
+    height: 100%
   }
 }
 
