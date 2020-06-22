@@ -1,10 +1,10 @@
 import { Notification } from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 
-// import { default as testData } from './otherdata.json'
+import { default as testData } from './level_main_07-08.json'
 // import { default as testData } from './mapdata.json'
 // import { default as testData } from './newdata.json'
-import { default as testData } from './d616.json'
+// import { default as testData } from './d616.json'
 // import { default as testData } from './mActd65_05.json'
 import { ElNotificationComponent } from 'element-ui/types/notification'
 import MapCube from 'SomeMap/Sharp/MapCube'
@@ -25,11 +25,11 @@ interface Noti extends ElNotificationComponent {
 
 predata.forEach(e => {
   const tIndex = e.position.col + e.position.row * mapData.width
-  const target = mapData.tiles[tIndex] as Tiles
+  const target = mapData.tiles[ tIndex ] as Tiles
   target.extra = {
     name: e.name,
     description: e.description || '没有说明？',
-    color: [123, 213, 111, 0.3],
+    color: [ 123, 213, 111, 0.3 ],
   }
 })
 

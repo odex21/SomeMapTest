@@ -1,13 +1,13 @@
 {
   "name": "kkdy-somemap",
-  "version": "0.3.10",
+  "version": "0.3.11-beta.1",
   "main": "dist/index.js",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "tsc",
     "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint",
-    "pub": "rollup -c && yarn publish"
+    "pub": "rollup -c"
   },
   "dependencies": {
     "pathfinding": "^0.4.18"

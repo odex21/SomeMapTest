@@ -31,31 +31,31 @@ import { mapData, routes, SomeMap } from "./initData"
 
 @Component
 export default class HelloWorld extends Vue {
-  @Prop() private msg!: string;
+  @Prop() private msg!: string
   t: number = 140;
   p: number = 3000;
-  someMap: any;
+  someMap: any
   cWidth: number = 1600;
   cHeight: number = 900;
   inited: boolean = false;
 
-  constructor() {
+  constructor () {
     super()
     console.log(this.t)
   }
 
-  updateTheta() {
+  updateTheta () {
     this.someMap.setPerspective({ theta: this.theta * 2 })
   }
-  updatePerspective() {
+  updatePerspective () {
     this.someMap.setPerspective({ perspective: { PERSPECTIVE: +this.p } })
   }
-  get theta() {
+  get theta () {
     console.log("theta", this.t)
     return (this.t / 360) * Math.PI
   }
 
-  async mounted(): Promise<void> {
+  async mounted (): Promise<void> {
     const resize = () => {
       console.log("resize")
       // const { innerWidth, innerHeight } = window
@@ -81,7 +81,8 @@ export default class HelloWorld extends Vue {
 
     addEventListener("resize", resize)
     resize()
-    this.someMap.loopRoutes(1, 2)
+    this.someMap.loopRoutes(20, 21)
+    // this.someMap.loopRoutes()
 
 
   }
